@@ -1,9 +1,5 @@
 # Game
 
-# TO DO
-- query die alle routes geeft uit de dataset (Marieke)
-- CSV met plaatjes bij ship-id's
-
 ## BLURB
 De Heren XVII hebben op de Generale Vergadering besloten tot de bouw van een nieuw schip. Zeereizen waren levensgevaarlijk; vele bemanningsleden, maar ook vele schepen 'bleven op zee'. Een ervaren kapitein kan het verschil maken tussen leven of dood. Kan jij in deze historische 'pick your own adventure'-game genoeg ervaring opdoen om het nieuwe schip te leiden? Wat wordt jouw levensverhaal? Maak keuzes of laat via de dobbelstenen het lot bepalen op welke reizen jij aanmonstert, bouw ervaring op door de lengte en tijd die je reist, en ontdek onderweg via museumstukken, archieven en andere bronnen meer over de schepen, de mensen die aanmonsterden en de plekken die onderweg aangedaan werden. Maar pas op: niemand is onsterfelijk, en Davy Jones is altijd op zoek naar meer zieltjes....
 
