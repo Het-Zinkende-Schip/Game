@@ -41,18 +41,18 @@ De speler heeft voldoende XP verzameld. Met een hoop bombarie en eerbetoon vertr
 [ ] Zoek hoge resolutie reprocutie van Blaeu kaart van de VOC met CC-licentie om als centrale plattegrond te dienen.
 
 ### Front-end
-[ ] Element: kaart
-[ ] Element: badges
-[ ] Element: iconen voor schepen, locaties/places of interests, Kamers, schipbreuk, stergeval...
-[ ] Element: beroepsiconen
-[ ] Element: (geanimeerde) dobbelstenen
-[ ] Elementen: pop-up voor plaatje+tekst
-[ ] Ontwerp pagina
-[ ] Element: route schip animeren?
-[ ] Element: (geanimeerde) kaars
+- [ ] Element: kaart
+- [ ] Element: badges
+- [ ] Element: iconen voor schepen, locaties/places of interests, Kamers, schipbreuk, stergeval...
+- [ ] Element: beroepsiconen
+- [ ] Element: (geanimeerde) dobbelstenen
+- [ ] Elementen: pop-up voor plaatje+tekst
+- [ ] Ontwerp pagina
+- [ ] Element: route schip animeren?
+- [ ] Element: (geanimeerde) kaars
 
 ### Back-end
-[ ] xxx
+- [ ] xxx
 
 
 - Een centrale pagina waar de speler naartoe kan navigeren. Eén afbeelding van een zeekaart met diverse objecten erom heen. In een overlay window links de XP en levens-trackers. In een overlay window rechts het keuzemenu en de dice tray.
