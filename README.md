@@ -26,22 +26,51 @@ De speler heeft voldoende XP verzameld. Met een hoop bombarie en eerbetoon vertr
 
 ## WORKLOAD
 
-Een centrale pagina waar de speler naartoe kan navigeren. Eén afbeelding van een zeekaart met diverse objecten erom heen. In een overlay window links de XP en levens-trackers. In een overlay window rechts het keuzemenu en de dice tray.
-Ten minste één, idealiter twee locaties (op twee verschillende routes?) waar de speler van boord kan gaan. Elk opent een nieuwe pagina, met een historische kaart van de plaats waarop twee of drie points of interest aanklikbaar zijn. Zodra de speler alle PoI's heeft aangeklikt, sluit de pagina en wordt de speler teruggestuurd naar de centrale pagina (en begint dus aan een nieuwe reis
+### Input
+[ ] Mk lijst van alle routes die gevaren zijn (beginpunt; eindpunt; coördinaten; xxx) > _Voor plotten routes op de centrale speelkaart._
+  [ ] Mk lijst met vertrekplaatsen.
+  [ ] Mk lijst met tussenstops.
+  [ ] Mk lijst met aankomstplaatsen.
+[ ] Mk lijst van alle VOC kamers (incl. coördinaten, wikidatalink, etc.)`
+[ ] Mk lijst met scheepstypen en -namen.
+  [ ] Vul aan met plaatjes.
+[ ] Mk lijst van categorie"en van beroepen.
+[ ] Mk lijst met links naar beeldmateriaal van plaatsen van VOC kamers.
+[ ] Mk lijst met links naar beeldmateriaal van aanmonsteringsplaatsen die regelmatig op de routes voorkwamen (bijv. Cylon, Madagaskar, Kaap de Goede Hoop; idealieter historische kaarten, schilderijen, tekeningen...)
+[ ] Mk lijst 'Murphy's Law' / 'Dumb ways to die'. = Mk setje met persoonsreconstructies / leuke aanknopingspunten. > _Basis voor badges? Iets doen met de 250 mensen die de doodsstraf gehad hebben?_
+[ ] Zoek hoge resolutie reprocutie van Blaeu kaart van de VOC met CC-licentie om als centrale plattegrond te dienen.
+
+### Front-end
+[ ] Element: kaart
+[ ] Element: badges
+[ ] Element: iconen voor schepen, locaties/places of interests, Kamers, schipbreuk, stergeval...
+[ ] Element: beroepsiconen
+[ ] Element: (geanimeerde) dobbelstenen
+[ ] Elementen: pop-up voor plaatje+tekst
+[ ] Ontwerp pagina
+[ ] Element: route schip animeren?
+[ ] Element: (geanimeerde) kaars
+
+### Back-end
+[ ] xxx
+
+
+- Een centrale pagina waar de speler naartoe kan navigeren. Eén afbeelding van een zeekaart met diverse objecten erom heen. In een overlay window links de XP en levens-trackers. In een overlay window rechts het keuzemenu en de dice tray.
+- Ten minste één, idealiter twee locaties (op twee verschillende routes?) waar de speler van boord kan gaan. Elk opent een nieuwe pagina, met een historische kaart van de plaats waarop twee of drie points of interest aanklikbaar zijn. Zodra de speler alle PoI's heeft aangeklikt, sluit de pagina en wordt de speler teruggestuurd naar de centrale pagina (en begint dus aan een nieuwe reis
 vanuit de Republiek).
 
 ## EXTRA WORKLOAD MAAR WEL HEEL LEUK
 
-(n.a.v. idee Nicolas) Badges voor de verschillende eindes. Nicolas stelde 'gezonken', 'nooit terug gegaan' of 'ziekte' voor, maar misschien ook dingen als 'I went to sea and all I got is this lousy badge', 'my first drowning', 'Rounded the Cape', etc. kunnen bedenken, een beetje (ietwat zwarte) humor?
-Elke reis wordt in een vignet (pop-up venster) één object/onderwerp uitgelicht, bijv. een object dat aan boord gebruikt had kunnen worden, of een link naar het online doorbladerbare scheepsjournaal van die reis.
-Wanneer een speler voor een bepaalde kaptein gekozen heeft, wordt een kort vignet van de carrière van deze kaptein getoond.
-De verschillende objecten die rondom de scheepskaart liggen kunnen aangeklikt worden, en dan opent een pop-up met informatie over het object en gebruik, of een link naar de collectie waar het uit afkomstig is.
-Davy Jones attacks: als de speler dobbelt om keuzes te maken, en in de vier reizen die hij maakt drie keer een één rolt, verschijnt Javy Jones en sleurt zijn ziel mee naar de locker; het spel eindigt ter plekke, game over.
+- (n.a.v. idee Nicolas) Badges voor de verschillende eindes. Nicolas stelde 'gezonken', 'nooit terug gegaan' of 'ziekte' voor, maar misschien ook dingen als 'I went to sea and all I got is this lousy badge', 'my first drowning', 'Rounded the Cape', etc. kunnen bedenken, een beetje (ietwat zwarte) humor?
+- Elke reis wordt in een vignet (pop-up venster) één object/onderwerp uitgelicht, bijv. een object dat aan boord gebruikt had kunnen worden, of een link naar het online doorbladerbare scheepsjournaal van die reis.
+- Wanneer een speler voor een bepaalde kaptein gekozen heeft, wordt een kort vignet van de carrière van deze kaptein getoond.
+- De verschillende objecten die rondom de scheepskaart liggen kunnen aangeklikt worden, en dan opent een pop-up met informatie over het object en gebruik, of een link naar de collectie waar het uit afkomstig is.
+- Davy Jones attacks: als de speler dobbelt om keuzes te maken, en in de vier reizen die hij maakt drie keer een één rolt, verschijnt Javy Jones en sleurt zijn ziel mee naar de locker; het spel eindigt ter plekke, game over.
 
 
 ## FANCY SCHMANCY (maar waarschijnlijk out of scope)
 
-Geanimeerde dobbelstenen.
-Een flikkerende kaars in beeld op de scheepskaart, al dan niet met daadwerkelijk schaduweffect.
-Derde locatie om van boord te gaan (op andere route).
-Meer Points of Interest op locaties om van boord te gaan.
+- Geanimeerde dobbelstenen.
+- Een flikkerende kaars in beeld op de scheepskaart, al dan niet met daadwerkelijk schaduweffect.
+- Derde locatie om van boord te gaan (op andere route).
+- Meer Points of Interest op locaties om van boord te gaan.
