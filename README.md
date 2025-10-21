@@ -2,8 +2,8 @@
 
 # TO DO
 
-[] query die alle routes geeft uit de dataset (Marieke)
-[] CSV met plaatjes bij ship-id's
+- query die alle routes geeft uit de dataset (Marieke)
+- CSV met plaatjes bij ship-id's
 
 
 
