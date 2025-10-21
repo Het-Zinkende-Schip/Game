@@ -30,7 +30,9 @@ Elke reis wordt in een vignet (pop-up venster) één object/onderwerp uitgelicht
 Wanneer een speler voor een bepaalde kaptein gekozen heeft, wordt een kort vignet van de carrière van deze kaptein getoond.
 De verschillende objecten die rondom de scheepskaart liggen kunnen aangeklikt worden, en dan opent een pop-up met informatie over het object en gebruik, of een link naar de collectie waar het uit afkomstig is.
 Davy Jones attacks: als de speler dobbelt om keuzes te maken, en in de vier reizen die hij maakt drie keer een één rolt, verschijnt Javy Jones en sleurt zijn ziel mee naar de locker; het spel eindigt ter plekke, game over.
-FANCY SCHMANCY (maar waarschijnlijk out of scope)
+
+
+## FANCY SCHMANCY (maar waarschijnlijk out of scope)
 
 Geanimeerde dobbelstenen.
 Een flikkerende kaars in beeld op de scheepskaart, al dan niet met daadwerkelijk schaduweffect.
