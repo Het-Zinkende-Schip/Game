@@ -1,5 +1,12 @@
 # Game
 
+# TO DO
+
+[] query die alle routes geeft uit de dataset (Marieke)
+[] CSV met plaatjes bij ship-id's
+
+
+
 REVISED PITCH n.a.v. overleg gisteravond [schetsjes volgen nog maar ben bijna bij m'n afspraak :)]
 
 ## BLURB
