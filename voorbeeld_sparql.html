@@ -1,0 +1,79 @@
+<p>zie developer console</p>
+
+<script>
+
+const sparqlEndpointVOC='https://qlever.coret.org/hackalod';
+const sparqlEndpointWikidata='https://query.wikidata.org/sparql';
+
+// Algemene functie om een SPARQL-query uit te voeren en resultaten als JavaScript-objecten terug te geven
+async function do_sparql(sparql, endpoint) {
+  const url = endpoint + "?query=" + encodeURIComponent(sparql);
+  const headers = { 
+    "Accept": "application/sparql-results+json",
+    "User-Agent": "Het Zinkende Schip/0.1 (https://github.com/Het-Zinkende-Schip/)"
+  };
+
+  // Verstuur de query naar het SPARQL-endpoint
+  const response = await fetch(url, { headers });
+  if (!response.ok) {
+    throw new Error(`SPARQL-query mislukt: ${response.status} ${response.statusText}`);
+  }
+
+  // Ontvang de resultaten in JSON-formaat
+  const data = await response.json();
+
+  // Zet de bindings om in een eenvoudige JS-array van objecten
+  const results = data.results.bindings.map(binding => {
+    const row = {};
+    for (const [key, value] of Object.entries(binding)) {
+      row[key] = value.value;
+    }
+    return row;
+  });
+
+  return results;
+}
+
+// Voorbeeld functie: lijst van VOC-kamers ophalen
+
+async function lijst_voc_kamers() {
+  const sparql = `
+    SELECT ?kamer ?label WHERE {
+      ?kamer wdt:P361|wdt:P749 wd:Q159766 ;
+             wdt:P31 wd:Q2366457 ;
+             rdfs:label ?label .
+      FILTER(LANG(?label)="nl")
+    } GROUP BY ?kamer ?label
+  `;
+  
+  const resultaten = await do_sparql(sparql,sparqlEndpointWikidata);
+  return resultaten;
+}
+
+// Voorbeeld functie: lijst van vertrekplaatsen (gesorteerd op aantal reizen vanuit die plaats)
+
+async function lijst_vertrekplaatsen() {
+  const sparql = `
+    SELECT ?_departurePlace (COUNT(?_departurePlace) AS ?departurePlace)
+	WHERE  {
+	  ?s <http://data.hetzinkendeschip.nl#departurePlace> ?_departurePlace .
+	 
+	} GROUP BY ?_departurePlace
+	ORDER BY DESC(?departurePlace)
+  `;
+  
+  const resultaten = await do_sparql(sparql,sparqlEndpointVOC);
+  return resultaten;
+}
+
+// Voorbeeld van gebruik:
+
+lijst_voc_kamers()
+  .then(resultaten => console.log("Resultaten:", resultaten))
+  .catch(fout => console.error("Fout bij het ophalen van de VOC-kamers:", fout.message));
+
+lijst_vertrekplaatsen()
+  .then(resultaten => console.log("Resultaten:", resultaten))
+  .catch(fout => console.error("Fout bij het ophalen van de vertrekplaatsen:", fout.message));
+
+</script>
