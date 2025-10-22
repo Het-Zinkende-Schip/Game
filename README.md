@@ -17,31 +17,9 @@ Er zijn dus twee uitkomsten:
 
 ## WORKLOAD
 
-### Input
-- [ ] Mk lijst van alle routes die gevaren zijn (beginpunt; eindpunt; coördinaten; xxx) > _Voor plotten routes op de centrale speelkaart._
-  - [ ] Mk lijst met vertrekplaatsen.
-  - [ ] Mk lijst met tussenstops.
-  - [ ] Mk lijst met aankomstplaatsen.
-- [ ] Mk lijst van alle VOC kamers (incl. coördinaten, wikidatalink, etc.)`
-- [ ] Mk lijst met scheepstypen en -namen.
-  - [ ] Vul aan met plaatjes.
-- [ ] Mk lijst van categorie"en van beroepen.
-- [ ] Mk lijst met links naar beeldmateriaal van plaatsen van VOC kamers.
-- [ ] Mk lijst met links naar beeldmateriaal van aanmonsteringsplaatsen die regelmatig op de routes voorkwamen (bijv. Cylon, Madagaskar, Kaap de Goede Hoop; idealieter historische kaarten, schilderijen, tekeningen...)
-- [ ] Mk lijst 'Murphy's Law' / 'Dumb ways to die'. = Mk setje met persoonsreconstructies / leuke aanknopingspunten. > _Basis voor badges? Iets doen met de 250 mensen die de doodsstraf gehad hebben?_
-- [ ] Zoek hoge resolutie reprocutie van Blaeu kaart van de VOC met CC-licentie om als centrale plattegrond te dienen.
+### [Input](https://github.com/Het-Zinkende-Schip/Game/issues?q=is%3Aissue%20state%3Aopen%20label%3Ainput)
 
-### Front-end
-_Een centrale pagina waar de speler naartoe kan navigeren. Eén afbeelding van een zeekaart met diverse objecten erom heen. In een overlay window links de XP en levens-trackers. In een overlay window rechts het keuzemenu en de dice tray._
-- [ ] Element: kaart
-- [ ] Element: badges > _(n.a.v. idee Nicolas) Badges voor de verschillende eindes. Nicolas stelde 'gezonken', 'nooit terug gegaan' of 'ziekte' voor, maar misschien ook dingen als 'I went to sea and all I got is this lousy badge', 'my first drowning', 'Rounded the Cape', etc. kunnen bedenken, een beetje (ietwat zwarte) humor?_
-- [ ] Element: iconen voor schepen, locaties/places of interests, Kamers, schipbreuk, stergeval...
-- [ ] Element: beroepsiconen
-- [ ] Element: (geanimeerde) dobbelstenen
-- [ ] Elementen: pop-up voor plaatje+tekst
-- [ ] Ontwerp pagina
-- [ ] Element: route schip animeren?
-- [ ] Element: (geanimeerde) kaars > _Een flikkerende kaars in beeld op de scheepskaart, al dan niet met daadwerkelijk schaduweffect._
+### [Front-end](https://github.com/Het-Zinkende-Schip/Game/issues?q=is%3Aissue%20state%3Aopen%20label%3Afront-end)
 
 ### Back-end
 - [ ] xxx
