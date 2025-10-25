@@ -35,6 +35,6 @@ Er zijn dus twee uitkomsten:
 
 
 ## FANCY SCHMANCY (maar waarschijnlijk out of scope)
-- Geanimeerde dobbelstenen.
+- [Geanimeerde dobbelstenen](https://github.com/Het-Zinkende-Schip/Game/issues/20#issuecomment-3431166788)
 - Derde locatie om van boord te gaan (op andere route).
 - Meer Points of Interest op locaties om van boord te gaan.
