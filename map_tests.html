@@ -65,46 +65,102 @@
     container: 'map',
     style: {
       version: 8,
-        sources: {
-          carte_reduite: {
-            type: 'raster',
-            tiles: ['https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?service=WMS&request=GetMap&layers=hetzinkendeschip%3Acarte-reduite-de-f09fdf2128df419c&styles=&format=image%2Fjpeg&transparent=false&version=1.1.1&width=256&height=256&srs=EPSG%3A3857&bbox={bbox-epsg-3857}'],
-            tileSize: 256,
-            attribution: 'Bellin, Jacques Nicolas, 1703-1772'
-          },
 
-          // Standard OSM — simple, neutral, free
-          osm: {
-            type: 'raster',
-            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution: '© OpenStreetMap contributors'
-          },
-
-          // OpenTopoMap — contours and terrain, still open and CORS-safe
-          opentopo: {
-            type: 'raster',
-            tiles: ['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
-        'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
-        'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution: 'Map data © OpenStreetMap contributors, SRTM | Style © OpenTopoMap (CC-BY-SA)'
-          },
-
-          // Carto Light — minimal detail, good for styling and filters
-          carto_light: {
-            type: 'raster',
-            tiles: ['https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution: '© OpenStreetMap contributors, © CartoDB'
-          }
+      sources: {
+        ne_hr: {
+          type: 'raster',
+          tiles: [
+            'https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?' +
+            'service=WMS&request=GetMap' +
+            '&layers=hetzinkendeschip:NE2_HR_LC_SR_W_DR' +
+            '&styles=&format=image/jpeg&transparent=false&version=1.1.1' +
+            '&width=256&height=256' +
+            '&srs=EPSG:3857&bbox={bbox-epsg-3857}'
+          ],
+          tileSize: 256,
+          attribution: 'Natural Earth 2 High Resolution'
         },
+
+        karta_ofver_nede: {
+          type: 'raster',
+          tiles: [
+            'https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?' +
+            'service=WMS&request=GetMap' +
+            '&layers=hetzinkendeschip:karta-ofver-nede-2d6ac673a7ff4048' +
+            '&styles=&format=image/jpeg&transparent=false&version=1.1.1' +
+            '&width=256&height=256' +
+            '&srs=EPSG:3857&bbox={bbox-epsg-3857}'
+          ],
+          tileSize: 256,
+          attribution: 'karta_ofver_nede'
+        },
+
+        carte_reduite: {
+          type: 'raster',
+          tiles: [
+            'https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?' +
+            'service=WMS&request=GetMap' +
+            '&layers=hetzinkendeschip:carte-reduite-de-f09fdf2128df419c' +
+            '&styles=&format=image/jpeg&transparent=false&version=1.1.1' +
+            '&width=256&height=256' +
+            '&srs=EPSG:3857&bbox={bbox-epsg-3857}'
+          ],
+          tileSize: 256,
+          attribution: 'Bellin, Jacques Nicolas, 1703–1772'
+        },
+
+        nova_totius_terr: {
+          type: 'raster',
+          tiles: [
+            'https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?' +
+            'service=WMS&request=GetMap' +
+            '&layers=hetzinkendeschip:nova-totius-terr-16f53c38a9ae485a' +
+            '&styles=&format=image/jpeg&transparent=false&version=1.1.1' +
+            '&width=256&height=256' +
+            '&srs=EPSG:3857&bbox={bbox-epsg-3857}'
+          ],
+          tileSize: 256,
+          attribution: 'nova_totius_terr'
+        },
+
+        osm: {
+          type: 'raster',
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          attribution: '© OpenStreetMap contributors'
+        },
+
+        opentopo: {
+          type: 'raster',
+          tiles: [
+            'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+            'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+            'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'
+          ],
+          tileSize: 256,
+          attribution: 'Map data © OpenStreetMap contributors, SRTM | Style © OpenTopoMap (CC-BY-SA)'
+        },
+
+        carto_light: {
+          type: 'raster',
+          tiles: [
+            'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+          ],
+          tileSize: 256,
+          attribution: '© OpenStreetMap contributors, © CartoDB'
+        }
+      },
+
+
         layers: [
           //{ id: 'osm', type: 'raster', source: 'osm', layout: { visibility: 'visible' } },
           //{ id: 'opentopo', type: 'raster', source: 'opentopo', layout: { visibility: 'none' } },
+          { id: 'ne_hr', type: 'raster', source: 'ne_hr', layout: { visibility: 'none' } },
+          { id: 'karta_ofver_nede', type: 'raster', source: 'karta_ofver_nede', layout: { visibility: 'none' } },
+          { id: 'nova_totius_terr', type: 'raster', source: 'nova_totius_terr', layout: { visibility: 'none' } },
           { id: 'carte_reduite', type: 'raster', source: 'carte_reduite', layout: { visibility: 'none' } },
           { id: 'carto_light', type: 'raster', source: 'carto_light', layout: { visibility: 'none' } }
         ]
