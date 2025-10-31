@@ -9,7 +9,7 @@
     html,body,#map {
       height:100%;
       margin:0;
-      background:#0077b6;
+      background:#2e1f02;
     }
 
     .map-area {
@@ -36,7 +36,7 @@
     .map-border {
       position:absolute;
       z-index:2;                /* above map */
-      top: 0%;
+      top: 5%;
       width:100%;
       height:100%;
       pointer-events:none;
@@ -59,50 +59,140 @@
 
 <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
-<script>
+
+<script type="module">
+import * as Strudel from "https://strudel.cc/releases/latest/strudel.mjs";
+await Strudel.init();
+
+const music1 = 
+
+</script>
+
+<script type="module">
   // 1) Boot map
+
+
+  async function loadGeoJSON(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to load GeoJSON');
+    return await response.json();
+  }
+
+  const geojson_routes = await loadGeoJSON('data/routes.geojson');
+
+  function getRouteFeature(startUrl, endUrl) {
+    const feature = geojson_routes.features.find(f =>
+      f.properties.dplace === startUrl && f.properties.aplace === endUrl
+    );
+    return feature ? feature : null;
+  }
+
   const map = new maplibregl.Map({
     container: 'map',
     style: {
       version: 8,
-        sources: {
-          // Standard OSM — simple, neutral, free
-          osm: {
-            type: 'raster',
-            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution: '© OpenStreetMap contributors'
-          },
 
-          // OpenTopoMap — contours and terrain, still open and CORS-safe
-          opentopo: {
-            type: 'raster',
-            tiles: ['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
-        'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
-        'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution: 'Map data © OpenStreetMap contributors, SRTM | Style © OpenTopoMap (CC-BY-SA)'
-          },
-
-          // Carto Light — minimal detail, good for styling and filters
-          carto_light: {
-            type: 'raster',
-            tiles: ['https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution: '© OpenStreetMap contributors, © CartoDB'
-          }
+      sources: {
+        ne_hr: {
+          type: 'raster',
+          tiles: [
+            'https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?' +
+            'service=WMS&request=GetMap' +
+            '&layers=hetzinkendeschip:NE2_HR_LC_SR_W_DR' +
+            '&styles=&format=image/jpeg&transparent=false&version=1.1.1' +
+            '&width=256&height=256' +
+            '&srs=EPSG:3857&bbox={bbox-epsg-3857}'
+          ],
+          tileSize: 256,
+          attribution: 'Natural Earth 2 High Resolution'
         },
+
+        karta_ofver_nede: {
+          type: 'raster',
+          tiles: [
+            'https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?' +
+            'service=WMS&request=GetMap' +
+            '&layers=hetzinkendeschip:karta-ofver-nede-2d6ac673a7ff4048' +
+            '&styles=&format=image/jpeg&transparent=false&version=1.1.1' +
+            '&width=256&height=256' +
+            '&srs=EPSG:3857&bbox={bbox-epsg-3857}'
+          ],
+          tileSize: 256,
+          attribution: 'karta_ofver_nede'
+        },
+
+        carte_reduite: {
+          type: 'raster',
+          tiles: [
+            'https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?' +
+            'service=WMS&request=GetMap' +
+            '&layers=hetzinkendeschip:carte-reduite-de-f09fdf2128df419c' +
+            '&styles=&format=image/jpeg&transparent=false&version=1.1.1' +
+            '&width=256&height=256' +
+            '&srs=EPSG:3857&bbox={bbox-epsg-3857}'
+          ],
+          tileSize: 256,
+          attribution: 'Bellin, Jacques Nicolas, 1703–1772'
+        },
+
+        nova_totius_terr: {
+          type: 'raster',
+          tiles: [
+            'https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?' +
+            'service=WMS&request=GetMap' +
+            '&layers=hetzinkendeschip:nova-totius-terr-16f53c38a9ae485a' +
+            '&styles=&format=image/jpeg&transparent=false&version=1.1.1' +
+            '&width=256&height=256' +
+            '&srs=EPSG:3857&bbox={bbox-epsg-3857}'
+          ],
+          tileSize: 256,
+          attribution: 'nova_totius_terr'
+        },
+
+        osm: {
+          type: 'raster',
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          attribution: '© OpenStreetMap contributors'
+        },
+
+        opentopo: {
+          type: 'raster',
+          tiles: [
+            'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+            'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+            'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'
+          ],
+          tileSize: 256,
+          attribution: 'Map data © OpenStreetMap contributors, SRTM | Style © OpenTopoMap (CC-BY-SA)'
+        },
+
+        carto_light: {
+          type: 'raster',
+          tiles: [
+            'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+          ],
+          tileSize: 256,
+          attribution: '© OpenStreetMap contributors, © CartoDB'
+        }
+      },
+
+
         layers: [
-          { id: 'osm', type: 'raster', source: 'osm', layout: { visibility: 'visible' } },
-          { id: 'opentopo', type: 'raster', source: 'opentopo', layout: { visibility: 'none' } },
+          //{ id: 'osm', type: 'raster', source: 'osm', layout: { visibility: 'visible' } },
+          //{ id: 'opentopo', type: 'raster', source: 'opentopo', layout: { visibility: 'none' } },
+          { id: 'ne_hr', type: 'raster', source: 'ne_hr', layout: { visibility: 'none' } },
+          { id: 'karta_ofver_nede', type: 'raster', source: 'karta_ofver_nede', layout: { visibility: 'none' } },
+          { id: 'nova_totius_terr', type: 'raster', source: 'nova_totius_terr', layout: { visibility: 'none' } },
+          { id: 'carte_reduite', type: 'raster', source: 'carte_reduite', layout: { visibility: 'none' } },
           { id: 'carto_light', type: 'raster', source: 'carto_light', layout: { visibility: 'none' } }
         ]
     },
-    center: [4.895, 52.372], // Amsterdam
-    zoom: 11,
+    center: [48.895, 1.372], // Amsterdam
+    zoom: 2,
     pitch: 55,     // tabletop look
     bearing: 20,   // slight rotation
     antialias: true
@@ -141,85 +231,63 @@
       if (e.key.toLowerCase() === 't') toggleBase();
     });
 
-  // 2) Domain data
-  const route = {
-    type: 'Feature',
-    geometry: { type: 'LineString', coordinates: [
-      [4.871,52.391],[4.879,52.388],[4.885,52.383],[4.892,52.378],
-      [4.900,52.374],[4.910,52.371],[4.920,52.368],[4.930,52.366]
-    ]}
-  };
 
-  const harborPoly = {
-    type: 'Feature',
-    properties: { name: 'Harbor' },
-    geometry: { type: 'Polygon', coordinates: [[
-      [4.89,52.382],[4.895,52.382],[4.895,52.378],[4.89,52.378],[4.89,52.382]
-    ]]}
-  };
+  async function safeAddImage(name, src) {
+    try {
+      await addImage(name, src);
+      console.log(`Loaded image: ${name}`);
+    } catch (err) {
+      console.error(`Failed to load image "${name}" from "${src}":`, err);
+    }
+  }
 
   // 3) After load, add sources and layers
   map.on('load', async () => {
     // Sprites: add your pixel PNGs. 64x64 works well.
-    await addImage('boat', 'data:image/png;base64,REPLACE_WITH_YOUR_BASE64_ICON'); // placeholder
-    await addImage('port', 'data:image/png;base64,REPLACE_WITH_YOUR_BASE64_ICON'); // placeholder
 
-    map.addSource('route', { type: 'geojson', data: route });
-    map.addSource('harbor', { type: 'geojson', data: harborPoly });
-    map.addSource('boatPoint', { type: 'geojson', data: pointAt(route, 0) }); // progress 0..1
-    map.addSource('ports', { type: 'geojson', data: {
-      type:'FeatureCollection',
-      features: [
-        { type:'Feature', properties:{icon:'port'}, geometry:{ type:'Point', coordinates:[4.895,52.380] } }
-      ]
-    }});
+    //await safeAddImage('boat', 'icons/ship.png'); // placeholder
 
-    // Polygon
-    map.addLayer({
-      id: 'harbor-fill',
-      type: 'fill',
-      source: 'harbor',
-      paint: { 'fill-color': '#3BA7', 'fill-outline-color': '#3B7' }
+    const el = document.createElement('img');
+    el.src = 'icons/ship.png';
+    el.style.width = '3em';
+
+
+    const boatMarker = new maplibregl.Marker({element: el})
+      .setLngLat([4.9, 52.37])
+      .addTo(map);
+
+    document.addEventListener('keydown', e => {
+    if (e.key.toLowerCase() === 'a') {
+      const route = getRouteFeature(
+        'http://data.hetzinkendeschip.nl/id/place/65',
+        'http://data.hetzinkendeschip.nl/id/place/9'
+      );
+      if (!route) {
+        console.warn('Route not found');
+        return;
+      }
+      animateAlong(route, boatMarker, {loop: false});
+    }
+  });
+
+    map.addSource('data', {
+      type: 'geojson',
+      data: 'data/routes.geojson'
     });
 
-    // Path
     map.addLayer({
-      id: 'route-line',
+      id: 'lines',
       type: 'line',
-      source: 'route',
-      paint: { 'line-color': '#00A', 'line-width': 4 }
-    });
-
-    // Port sprites
-    map.addLayer({
-      id: 'ports',
-      type: 'symbol',
-      source: 'ports',
-      layout: {
-        'icon-image': ['get','icon'],
-        'icon-size': 1,
-        'icon-allow-overlap': true,
-        'icon-ignore-placement': true
+      source: 'data',
+      paint: {
+        'line-color': '#ff0000',
+        'line-width': 2
       }
     });
 
-    // Boat sprite
-    map.addLayer({
-      id: 'boat',
-      type: 'symbol',
-      source: 'boatPoint',
-      layout: {
-        'icon-image': 'boat',
-        'icon-size': 1.2,
-        'icon-rotate': ['get','heading'], // rotate to path heading
-        'icon-rotation-alignment': 'map',
-        'icon-allow-overlap': true,
-        'icon-ignore-placement': true
-      }
-    });
 
     // Start animation
-    animateAlong(route, { speedKts: 25, loop: true, centerCamera: true });
+    // animateAlong(route, { speedKts: 25, loop: true, centerCamera: true });
   });
 
   // Utilities
@@ -231,7 +299,7 @@
     const eps = 0.0005 * len;
     const ptA = pt;
     const ptB = turf.along(line, Math.min(t * len + eps, len), { units: 'kilometers' });
-    const bearing = turf.bearing(ptA, ptB);
+    const bearing = 20 //turf.bearing(ptA, ptB);
     return {
       type: 'Feature',
       properties: { heading: bearing },
@@ -242,18 +310,44 @@
   async function addImage(name, src) {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.onload = () => { map.addImage(name, img, { pixelRatio: 1 }); resolve(); };
+      img.onload = () => { 
+        map.addImage(name, img, { pixelRatio: 1 }); 
+        //img.style.display = 'block';
+        //document.body.appendChild(img);
+        resolve(img); 
+      };
+      //img.id = name;
       img.onerror = reject;
       img.src = src;
     });
   }
 
   // Core animation loop
-  function animateAlong(lineFeature, { speedKts = 20, loop = true, centerCamera = true }) {
+  function animateAlong(lineFeature, marker, { speedKts = 2000000, loop = true, centerCamera = true } = {}) {
     const line = turf.lineString(lineFeature.geometry.coordinates);
     const lengthNm = turf.length(line, { units: 'nauticalmiles' }); // route length in NM
     const totalMs = (lengthNm / speedKts) * 3600 * 1000;            // time to traverse
     let start = performance.now();
+
+    // compute zoom range once
+    const zoomStart = map.getZoom();
+    const bounds = turf.bbox(line);
+    const zoomEnd = map.cameraForBounds([
+      [bounds[0], bounds[1]],
+      [bounds[2], bounds[3]]
+    ]).zoom/1.1;
+
+    map.easeTo({
+      center: [(bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2],
+      zoom: zoomEnd,
+      bearing: 20,   // optional: face direction of travel
+      duration: 1000,  // short ease to keep motion smooth
+      essential: true
+    });
+
+
+    // prepare a marker instead of a GeoJSON source
+    const startCoord = lineFeature.geometry.coordinates[0];
 
     function frame(now) {
       let elapsed = now - start;
@@ -265,21 +359,10 @@
       }
       const t = Math.min(elapsed / totalMs, 1);
       const pt = pointAt(lineFeature, t);
-      const src = map.getSource('boatPoint');
-      if (src) src.setData(pt);
+      const [lng, lat] = pt.geometry.coordinates;
+      
+      marker.setLngLat([lng, lat]);
 
-      if (centerCamera) {
-        const [lng, lat] = pt.geometry.coordinates;
-        const brg = pt.properties.heading || 0;
-        map.easeTo({
-          center: [lng, lat],
-          zoom: 14,
-          bearing: brg,   // optional: face direction of travel
-          pitch: 55,
-          duration: 250,  // short ease to keep motion smooth
-          essential: true
-        });
-      }
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
