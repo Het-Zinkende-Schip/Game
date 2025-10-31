@@ -6,13 +6,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet"/>
   <style>
-    html,body,#map {height:100%;margin:0}
+    html,body,#map {
+      height:100%;
+      margin:0;
+      background:#0077b6;
+    }
+
+    .map-area {
+      position:relative;
+      width:90%;          /* 5% left/right */
+      height:95%;         /* 5% top */
+      margin:5%;
+      top: 5%;
+    }
+
+    .map-clip {
+      position:absolute;
+      inset:0;
+      overflow:hidden;    /* crops pitched map edges */
+    }
+
+    #map {
+      width:100%;
+      height:100%;
+      position:relative;
+      z-index:1;
+    }
+
+    .map-border {
+      position:absolute;
+      z-index:2;                /* above map */
+      top: 0%;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      transform: perspective(1000px) rotateX(20deg);   /* same pitch as map */
+      transform-origin:center center;
+    }
+
     /* Keep pixel-art crisp when scaled */
     canvas, .maplibregl-canvas { image-rendering: pixelated; }
+
   </style>
 </head>
 <body>
-<div id="map"></div>
+<div class="map-area">
+  <div class="map-clip">
+    <div id="map"></div>
+  </div>
+</div>
+  <img src="images/vintage-paper-texture-1504806601t0F-background.png" class="map-border" alt="">
 
 <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
