@@ -1,0 +1,3 @@
+setcpm(60)
+$: note("50@6").sound("gm_seashore").gain(sine) //sea
+$: n("<0 -3 0 -3 0 -3>, 2 4 <[6,8] [7,9] [8,10]>").scale("<C:minor D:mixolydian C:minor E:mixolydian>/4").sound("gm_harpsichord").gain(.5) // arpeggio

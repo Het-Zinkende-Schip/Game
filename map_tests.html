@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Tabletop Boats</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet"/>
+  <style>
+    html,body,#map {height:100%;margin:0}
+    /* Keep pixel-art crisp when scaled */
+    canvas, .maplibregl-canvas { image-rendering: pixelated; }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+
+<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+<script>
+  // 1) Boot map
+  const map = new maplibregl.Map({
+    container: 'map',
+    style: {
+      version: 8,
+        sources: {
+          // Standard OSM — simple, neutral, free
+          osm: {
+            type: 'raster',
+            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: '© OpenStreetMap contributors'
+          },
+
+          // OpenTopoMap — contours and terrain, still open and CORS-safe
+          opentopo: {
+            type: 'raster',
+            tiles: ['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+        'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+        'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: 'Map data © OpenStreetMap contributors, SRTM | Style © OpenTopoMap (CC-BY-SA)'
+          },
+
+          // Carto Light — minimal detail, good for styling and filters
+          carto_light: {
+            type: 'raster',
+            tiles: ['https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+        'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+        'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+        'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: '© OpenStreetMap contributors, © CartoDB'
+          }
+        },
+        layers: [
+          { id: 'osm', type: 'raster', source: 'osm', layout: { visibility: 'visible' } },
+          { id: 'opentopo', type: 'raster', source: 'opentopo', layout: { visibility: 'none' } },
+          { id: 'carto_light', type: 'raster', source: 'carto_light', layout: { visibility: 'none' } }
+        ]
+    },
+    center: [4.895, 52.372], // Amsterdam
+    zoom: 11,
+    pitch: 55,     // tabletop look
+    bearing: 20,   // slight rotation
+    antialias: true
+  });
+
+    let baseLayers = [];
+
+    map.on('load', () => {
+      // collect all raster layers present at load time
+      baseLayers = map.getStyle().layers
+        .filter(l => l.type === 'raster')
+        .map(l => l.id);
+
+      // ensure only the first is visible
+      baseLayers.forEach((id, i) =>
+        map.setLayoutProperty(id, 'visibility', i === 0 ? 'visible' : 'none')
+      );
+
+      console.log('Base layers detected:', baseLayers);
+    });
+
+    let currentBase = 0;
+
+    function toggleBase() {
+      if (baseLayers.length === 0) {
+        console.log('No base layers!!!');
+        return;
+      }
+      map.setLayoutProperty(baseLayers[currentBase], 'visibility', 'none');
+      currentBase = (currentBase + 1) % baseLayers.length;
+      map.setLayoutProperty(baseLayers[currentBase], 'visibility', 'visible');
+      console.log('Base layer:', baseLayers[currentBase]);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key.toLowerCase() === 't') toggleBase();
+    });
+
+  // 2) Domain data
+  const route = {
+    type: 'Feature',
+    geometry: { type: 'LineString', coordinates: [
+      [4.871,52.391],[4.879,52.388],[4.885,52.383],[4.892,52.378],
+      [4.900,52.374],[4.910,52.371],[4.920,52.368],[4.930,52.366]
+    ]}
+  };
+
+  const harborPoly = {
+    type: 'Feature',
+    properties: { name: 'Harbor' },
+    geometry: { type: 'Polygon', coordinates: [[
+      [4.89,52.382],[4.895,52.382],[4.895,52.378],[4.89,52.378],[4.89,52.382]
+    ]]}
+  };
+
+  // 3) After load, add sources and layers
+  map.on('load', async () => {
+    // Sprites: add your pixel PNGs. 64x64 works well.
+    await addImage('boat', 'data:image/png;base64,REPLACE_WITH_YOUR_BASE64_ICON'); // placeholder
+    await addImage('port', 'data:image/png;base64,REPLACE_WITH_YOUR_BASE64_ICON'); // placeholder
+
+    map.addSource('route', { type: 'geojson', data: route });
+    map.addSource('harbor', { type: 'geojson', data: harborPoly });
+    map.addSource('boatPoint', { type: 'geojson', data: pointAt(route, 0) }); // progress 0..1
+    map.addSource('ports', { type: 'geojson', data: {
+      type:'FeatureCollection',
+      features: [
+        { type:'Feature', properties:{icon:'port'}, geometry:{ type:'Point', coordinates:[4.895,52.380] } }
+      ]
+    }});
+
+    // Polygon
+    map.addLayer({
+      id: 'harbor-fill',
+      type: 'fill',
+      source: 'harbor',
+      paint: { 'fill-color': '#3BA7', 'fill-outline-color': '#3B7' }
+    });
+
+    // Path
+    map.addLayer({
+      id: 'route-line',
+      type: 'line',
+      source: 'route',
+      paint: { 'line-color': '#00A', 'line-width': 4 }
+    });
+
+    // Port sprites
+    map.addLayer({
+      id: 'ports',
+      type: 'symbol',
+      source: 'ports',
+      layout: {
+        'icon-image': ['get','icon'],
+        'icon-size': 1,
+        'icon-allow-overlap': true,
+        'icon-ignore-placement': true
+      }
+    });
+
+    // Boat sprite
+    map.addLayer({
+      id: 'boat',
+      type: 'symbol',
+      source: 'boatPoint',
+      layout: {
+        'icon-image': 'boat',
+        'icon-size': 1.2,
+        'icon-rotate': ['get','heading'], // rotate to path heading
+        'icon-rotation-alignment': 'map',
+        'icon-allow-overlap': true,
+        'icon-ignore-placement': true
+      }
+    });
+
+    // Start animation
+    animateAlong(route, { speedKts: 25, loop: true, centerCamera: true });
+  });
+
+  // Utilities
+  function pointAt(lineFeature, t) {
+    const line = turf.lineString(lineFeature.geometry.coordinates);
+    const len = turf.length(line, { units: 'kilometers' });
+    const pt = turf.along(line, t * len, { units: 'kilometers' });
+    // compute heading from small step ahead
+    const eps = 0.0005 * len;
+    const ptA = pt;
+    const ptB = turf.along(line, Math.min(t * len + eps, len), { units: 'kilometers' });
+    const bearing = turf.bearing(ptA, ptB);
+    return {
+      type: 'Feature',
+      properties: { heading: bearing },
+      geometry: { type: 'Point', coordinates: pt.geometry.coordinates }
+    };
+  }
+
+  async function addImage(name, src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => { map.addImage(name, img, { pixelRatio: 1 }); resolve(); };
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  // Core animation loop
+  function animateAlong(lineFeature, { speedKts = 20, loop = true, centerCamera = true }) {
+    const line = turf.lineString(lineFeature.geometry.coordinates);
+    const lengthNm = turf.length(line, { units: 'nauticalmiles' }); // route length in NM
+    const totalMs = (lengthNm / speedKts) * 3600 * 1000;            // time to traverse
+    let start = performance.now();
+
+    function frame(now) {
+      let elapsed = now - start;
+      if (elapsed > totalMs) {
+        if (!loop) return;
+        // restart cleanly
+        start = now;
+        elapsed = 0;
+      }
+      const t = Math.min(elapsed / totalMs, 1);
+      const pt = pointAt(lineFeature, t);
+      const src = map.getSource('boatPoint');
+      if (src) src.setData(pt);
+
+      if (centerCamera) {
+        const [lng, lat] = pt.geometry.coordinates;
+        const brg = pt.properties.heading || 0;
+        map.easeTo({
+          center: [lng, lat],
+          zoom: 14,
+          bearing: brg,   // optional: face direction of travel
+          pitch: 55,
+          duration: 250,  // short ease to keep motion smooth
+          essential: true
+        });
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+</script>
+</body>
+</html>

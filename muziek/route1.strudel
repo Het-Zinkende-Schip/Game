@@ -1,0 +1,5 @@
+setcpm(60)
+$: note("50@6").sound("gm_seashore").gain(sine) //sea
+$: n("<0 -3 0 -3 0 -3>, 2 4 <[6,8] [7,9]>").scale("<C:minor D:mixolydian C:minor E:mixolydian>/4").sound("piano").gain(.5) // arpeggio
+$: sound("bd").bank("sakatadpm48").gain(1) // beat1
+$: sound("[~ mt] [~ -] [~ mt] [~ mt]").early(.1).bank("sakatadpm48").gain(.3) // beat2
