@@ -60,11 +60,27 @@
 <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
-<script type="module">
-import * as Strudel from "https://strudel.cc/releases/latest/strudel.mjs";
-await Strudel.init();
+<script src="https://unpkg.com/@strudel/web@1.0.3"></script>
 
-const music1 = 
+<script type="module">
+
+/* async function readFile(filePath) {
+  const response = await fetch(filePath);
+  const fileContent = await response.text();
+  return fileContent
+}
+
+const music1 = await readFile('muziek/route1.strudel');
+const music2 = await readFile('muziek/route2.strudel'); */
+
+initStrudel();
+
+window.addEventListener('keydown', e => {
+  if (e.key === '1') n("<0 -3 0 -3 0 -3>, 2 4 <[6,8] [7,9] [8,10]>").scale("<C:minor D:mixolydian C:minor E:mixolydian>/4").sound("gm_harpsichord").gain(.5).play();
+  if (e.key === '2') n("<0 -3 0 -3 0 -3>, 2 4 <[6,8] [7,9]>").scale("<C:minor D:mixolydian C:minor E:mixolydian>/4").sound("piano").gain(.5).play();
+  if (e.key === '3') hush()
+});
+
 
 </script>
 
