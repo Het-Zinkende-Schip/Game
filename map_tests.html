@@ -9,7 +9,7 @@
     html,body,#map {
       height:100%;
       margin:0;
-      background:#0077b6;
+      background:#2e1f02;
     }
 
     .map-area {
@@ -36,7 +36,7 @@
     .map-border {
       position:absolute;
       z-index:2;                /* above map */
-      top: 0%;
+      top: 5%;
       width:100%;
       height:100%;
       pointer-events:none;
@@ -66,6 +66,13 @@
     style: {
       version: 8,
         sources: {
+          carte_reduite: {
+            type: 'raster',
+            tiles: ['https://www.goudatijdmachine.nl/geoserver/hetzinkendeschip/wms?service=WMS&request=GetMap&layers=hetzinkendeschip%3Acarte-reduite-de-f09fdf2128df419c&styles=&format=image%2Fjpeg&transparent=false&version=1.1.1&width=256&height=256&srs=EPSG%3A3857&bbox={bbox-epsg-3857}'],
+            tileSize: 256,
+            attribution: 'Bellin, Jacques Nicolas, 1703-1772'
+          },
+
           // Standard OSM — simple, neutral, free
           osm: {
             type: 'raster',
@@ -96,13 +103,14 @@
           }
         },
         layers: [
-          { id: 'osm', type: 'raster', source: 'osm', layout: { visibility: 'visible' } },
-          { id: 'opentopo', type: 'raster', source: 'opentopo', layout: { visibility: 'none' } },
+          //{ id: 'osm', type: 'raster', source: 'osm', layout: { visibility: 'visible' } },
+          //{ id: 'opentopo', type: 'raster', source: 'opentopo', layout: { visibility: 'none' } },
+          { id: 'carte_reduite', type: 'raster', source: 'carte_reduite', layout: { visibility: 'none' } },
           { id: 'carto_light', type: 'raster', source: 'carto_light', layout: { visibility: 'none' } }
         ]
     },
-    center: [4.895, 52.372], // Amsterdam
-    zoom: 11,
+    center: [48.895, 1.372], // Amsterdam
+    zoom: 2,
     pitch: 55,     // tabletop look
     bearing: 20,   // slight rotation
     antialias: true
@@ -141,85 +149,32 @@
       if (e.key.toLowerCase() === 't') toggleBase();
     });
 
-  // 2) Domain data
-  const route = {
-    type: 'Feature',
-    geometry: { type: 'LineString', coordinates: [
-      [4.871,52.391],[4.879,52.388],[4.885,52.383],[4.892,52.378],
-      [4.900,52.374],[4.910,52.371],[4.920,52.368],[4.930,52.366]
-    ]}
-  };
-
-  const harborPoly = {
-    type: 'Feature',
-    properties: { name: 'Harbor' },
-    geometry: { type: 'Polygon', coordinates: [[
-      [4.89,52.382],[4.895,52.382],[4.895,52.378],[4.89,52.378],[4.89,52.382]
-    ]]}
-  };
+  async function safeAddImage(name, src) {
+    try {
+      await addImage(name, src);
+      console.log(`Loaded image: ${name}`);
+    } catch (err) {
+      console.error(`Failed to load image "${name}" from "${src}":`, err);
+    }
+  }
 
   // 3) After load, add sources and layers
   map.on('load', async () => {
     // Sprites: add your pixel PNGs. 64x64 works well.
-    await addImage('boat', 'data:image/png;base64,REPLACE_WITH_YOUR_BASE64_ICON'); // placeholder
-    await addImage('port', 'data:image/png;base64,REPLACE_WITH_YOUR_BASE64_ICON'); // placeholder
 
-    map.addSource('route', { type: 'geojson', data: route });
-    map.addSource('harbor', { type: 'geojson', data: harborPoly });
-    map.addSource('boatPoint', { type: 'geojson', data: pointAt(route, 0) }); // progress 0..1
-    map.addSource('ports', { type: 'geojson', data: {
-      type:'FeatureCollection',
-      features: [
-        { type:'Feature', properties:{icon:'port'}, geometry:{ type:'Point', coordinates:[4.895,52.380] } }
-      ]
-    }});
+    //await safeAddImage('boat', 'icons/ship.png'); // placeholder
 
-    // Polygon
-    map.addLayer({
-      id: 'harbor-fill',
-      type: 'fill',
-      source: 'harbor',
-      paint: { 'fill-color': '#3BA7', 'fill-outline-color': '#3B7' }
-    });
+    const el = document.createElement('img');
+    el.src = 'icons/ship.png';
+    el.style.width = '3em';
 
-    // Path
-    map.addLayer({
-      id: 'route-line',
-      type: 'line',
-      source: 'route',
-      paint: { 'line-color': '#00A', 'line-width': 4 }
-    });
 
-    // Port sprites
-    map.addLayer({
-      id: 'ports',
-      type: 'symbol',
-      source: 'ports',
-      layout: {
-        'icon-image': ['get','icon'],
-        'icon-size': 1,
-        'icon-allow-overlap': true,
-        'icon-ignore-placement': true
-      }
-    });
-
-    // Boat sprite
-    map.addLayer({
-      id: 'boat',
-      type: 'symbol',
-      source: 'boatPoint',
-      layout: {
-        'icon-image': 'boat',
-        'icon-size': 1.2,
-        'icon-rotate': ['get','heading'], // rotate to path heading
-        'icon-rotation-alignment': 'map',
-        'icon-allow-overlap': true,
-        'icon-ignore-placement': true
-      }
-    });
+    const boatMarker = new maplibregl.Marker({element: el})
+      .setLngLat([4.9, 52.37])
+      .addTo(map);
 
     // Start animation
-    animateAlong(route, { speedKts: 25, loop: true, centerCamera: true });
+    // animateAlong(route, { speedKts: 25, loop: true, centerCamera: true });
   });
 
   // Utilities
@@ -242,7 +197,13 @@
   async function addImage(name, src) {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.onload = () => { map.addImage(name, img, { pixelRatio: 1 }); resolve(); };
+      img.onload = () => { 
+        map.addImage(name, img, { pixelRatio: 1 }); 
+        //img.style.display = 'block';
+        //document.body.appendChild(img);
+        resolve(img); 
+      };
+      //img.id = name;
       img.onerror = reject;
       img.src = src;
     });
