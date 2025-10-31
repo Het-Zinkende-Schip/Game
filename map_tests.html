@@ -59,8 +59,34 @@
 
 <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
-<script>
+
+<script type="module">
+import * as Strudel from "https://strudel.cc/releases/latest/strudel.mjs";
+await Strudel.init();
+
+const music1 = 
+
+</script>
+
+<script type="module">
   // 1) Boot map
+
+
+  async function loadGeoJSON(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to load GeoJSON');
+    return await response.json();
+  }
+
+  const geojson_routes = await loadGeoJSON('data/routes.geojson');
+
+  function getRouteFeature(startUrl, endUrl) {
+    const feature = geojson_routes.features.find(f =>
+      f.properties.dplace === startUrl && f.properties.aplace === endUrl
+    );
+    return feature ? feature : null;
+  }
+
   const map = new maplibregl.Map({
     container: 'map',
     style: {
@@ -205,6 +231,7 @@
       if (e.key.toLowerCase() === 't') toggleBase();
     });
 
+
   async function safeAddImage(name, src) {
     try {
       await addImage(name, src);
@@ -229,6 +256,36 @@
       .setLngLat([4.9, 52.37])
       .addTo(map);
 
+    document.addEventListener('keydown', e => {
+    if (e.key.toLowerCase() === 'a') {
+      const route = getRouteFeature(
+        'http://data.hetzinkendeschip.nl/id/place/65',
+        'http://data.hetzinkendeschip.nl/id/place/9'
+      );
+      if (!route) {
+        console.warn('Route not found');
+        return;
+      }
+      animateAlong(route, boatMarker, {loop: false});
+    }
+  });
+
+    map.addSource('data', {
+      type: 'geojson',
+      data: 'data/routes.geojson'
+    });
+
+    map.addLayer({
+      id: 'lines',
+      type: 'line',
+      source: 'data',
+      paint: {
+        'line-color': '#ff0000',
+        'line-width': 2
+      }
+    });
+
+
     // Start animation
     // animateAlong(route, { speedKts: 25, loop: true, centerCamera: true });
   });
@@ -242,7 +299,7 @@
     const eps = 0.0005 * len;
     const ptA = pt;
     const ptB = turf.along(line, Math.min(t * len + eps, len), { units: 'kilometers' });
-    const bearing = turf.bearing(ptA, ptB);
+    const bearing = 20 //turf.bearing(ptA, ptB);
     return {
       type: 'Feature',
       properties: { heading: bearing },
@@ -266,11 +323,31 @@
   }
 
   // Core animation loop
-  function animateAlong(lineFeature, { speedKts = 20, loop = true, centerCamera = true }) {
+  function animateAlong(lineFeature, marker, { speedKts = 2000000, loop = true, centerCamera = true } = {}) {
     const line = turf.lineString(lineFeature.geometry.coordinates);
     const lengthNm = turf.length(line, { units: 'nauticalmiles' }); // route length in NM
     const totalMs = (lengthNm / speedKts) * 3600 * 1000;            // time to traverse
     let start = performance.now();
+
+    // compute zoom range once
+    const zoomStart = map.getZoom();
+    const bounds = turf.bbox(line);
+    const zoomEnd = map.cameraForBounds([
+      [bounds[0], bounds[1]],
+      [bounds[2], bounds[3]]
+    ]).zoom/1.1;
+
+    map.easeTo({
+      center: [(bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2],
+      zoom: zoomEnd,
+      bearing: 20,   // optional: face direction of travel
+      duration: 1000,  // short ease to keep motion smooth
+      essential: true
+    });
+
+
+    // prepare a marker instead of a GeoJSON source
+    const startCoord = lineFeature.geometry.coordinates[0];
 
     function frame(now) {
       let elapsed = now - start;
@@ -282,21 +359,10 @@
       }
       const t = Math.min(elapsed / totalMs, 1);
       const pt = pointAt(lineFeature, t);
-      const src = map.getSource('boatPoint');
-      if (src) src.setData(pt);
+      const [lng, lat] = pt.geometry.coordinates;
+      
+      marker.setLngLat([lng, lat]);
 
-      if (centerCamera) {
-        const [lng, lat] = pt.geometry.coordinates;
-        const brg = pt.properties.heading || 0;
-        map.easeTo({
-          center: [lng, lat],
-          zoom: 14,
-          bearing: brg,   // optional: face direction of travel
-          pitch: 55,
-          duration: 250,  // short ease to keep motion smooth
-          essential: true
-        });
-      }
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
