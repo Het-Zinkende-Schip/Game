@@ -37,7 +37,7 @@ function game_play(dialog_uri) {
 
 	switch (stage) {
 	  case 1:
-		console.log("Stage 1: Kies vertrekhaven");
+		console.log("Stage 1: Kies je vertrekhaven");
 		if (reis==1) {
 			havens=get_lijst_vertrekhavens("NL");
 		} else {
@@ -193,7 +193,7 @@ function toon_startscherm() {
 	// open dialog met intro tekst + plaatje + button "start de reis", opening tune?
 	activateModal(
 		title = "Welkom bij het Zinkende Schip!",
-		text = "intro....",
+		text = "Welkom bij *Het Zinkende Schip*, cartograaf! In dit point-en-click spel monster je als leerling cartograaf aan bij verschillende VOC reizen. Terwijl je aan boord een historisch persoon schaduwt, en op basis van data uit onder andere Maritime Stepping Stones (MaSS), het Huygens instituut en het Nationaal Archief, verdien jij je cartografie-gereedschappen. Wat leer jij onderweg? En lukt het je op te klimmen van leerling naar gezel?",
 		choicesObject = null,
 		mp3 = null,
 		userChoice = false,
