@@ -8,6 +8,33 @@ function get_lijst_vertrekhavens(bekerking) {
 	// returns array of (max 25) places: place_uri, place_name, long, lat
 	
 	const sparql = `
+		# http://yasgui.org/short/MHcZmpPbBX
+		
+		PREFIX hzs: <http://data.hetzinkendeschip.nl#>
+		PREFIX schema: <https://schema.org/>
+		PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+		SELECT ?departurePlace ?placeId ?latitude ?longitude
+		WHERE {
+		VALUES ?onlyNL { true }   # zet op false om de hele wereld te tonen
+
+		?voyage hzs:departurePlace ?departurePlace .
+		?placeId a schema:Place ;
+					schema:geo ?geo ;
+					schema:name ?departurePlace .
+		?geo schema:latitude ?latitude ;
+				schema:longitude ?longitude .
+
+		FILTER(STRSTARTS(STR(?placeId), "http://data.hetzinkendeschip.nl/id/place/"))
+
+		# filter als onlyNL true is
+		FILTER(
+			!?onlyNL ||
+			(xsd:decimal(?latitude) >= 50.7 && xsd:decimal(?latitude) <= 53.7 &&
+			xsd:decimal(?longitude) >= 3.3 && xsd:decimal(?longitude) <= 7.3)
+		)
+		}
+		ORDER BY ?departurePlace
 	`;
 
 	const resultaten = await do_sparql(sparql,sparqlEndpointVOC);
