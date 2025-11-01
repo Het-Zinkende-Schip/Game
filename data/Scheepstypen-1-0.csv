@@ -1,0 +1,16 @@
+type_of_ship,Scheepstype Wiki,Wiki URI,Scheepstype CHT,CHT URI
+adviesjacht,adviesjacht,,adviesjachten,https://data.cultureelerfgoed.nl/term/id/cht/54754e31-7eea-4b34-8714-4d71c172cde8
+jacht,jacht,https://wikidata.org/entity/Q170173,jachten (scheepstype),https://data.cultureelerfgoed.nl/term/id/cht/3cbb21e3-d2ad-4c3f-a2b8-91ace0724944
+paketboot,pakketboot,https://wikidata.org/entity/Q2065452,pakketboten,https://data.cultureelerfgoed.nl/term/id/cht/c1507be9-8f83-463a-8a1c-47d9821300f3
+buis,buis,https://wikidata.org/entity/Q1021789,buizen (schip),https://data.cultureelerfgoed.nl/term/id/cht/958b42ac-b535-4f27-9add-8084c376cd93
+kat,katschip,https://wikidata.org/entity/Q16070471,katten (scheepvaart),https://data.cultureelerfgoed.nl/term/id/cht/8ecd3a76-a381-4ec7-9641-7ae1bfaa934f
+logger,logger,https://wikidata.org/entity/Q783186,loggers,https://data.cultureelerfgoed.nl/term/id/cht/fc1433ae-4425-47de-a056-0a7dce9a9df5
+pinas,Pinas,https://wikidata.org/entity/Q837139,pinassen,https://data.cultureelerfgoed.nl/term/id/cht/9603ccfd-278d-4766-bc81-cc10f6e75b15
+fluit,fluitschip,https://wikidata.org/entity/Q569289,fluiten (scheepvaart),https://data.cultureelerfgoed.nl/term/id/cht/18a14bc8-215a-4fd5-8b9a-aaafd42897c3
+hoeker,hoeker,https://wikidata.org/entity/Q391777,hoekers,https://data.cultureelerfgoed.nl/term/id/cht/6c6a94e6-a741-42de-9983-8385f6a7c89d
+hekboot,hekboot,,hekboten,https://data.cultureelerfgoed.nl/term/id/cht/2a9ff69d-adaa-4e19-bbcf-0f6275096eba
+galjoot,galjoot,https://wikidata.org/entity/Q1046122,galjoten,https://data.cultureelerfgoed.nl/term/id/cht/f7688613-f1fc-43e4-9c20-1aade5bfa41a
+fregat,fregat,https://wikidata.org/entity/Q12012855,fregatten,https://data.cultureelerfgoed.nl/term/id/cht/822a0433-9a69-4b9e-b3d2-d1a33bd5cc09
+brik,brik,https://wikidata.org/entity/Q202539,brikken (vaartuig),https://data.cultureelerfgoed.nl/term/id/cht/9ba9231f-7a9f-4200-8a07-54a3c79d0372
+pink,Pink,https://wikidata.org/entity/Q2340654,visserspinken,https://data.cultureelerfgoed.nl/term/id/cht/1ef3c786-2134-465c-a45f-96f3f03ee2e0
+brigantijn,brigantijn,https://wikidata.org/entity/Q189418,schoenerbrikken,https://data.cultureelerfgoed.nl/term/id/cht/bf0f4d7a-2535-47f4-b57e-d6a9887e3744
