@@ -81,3 +81,14 @@ showInstrument(4)
   activatePlaceChoiceMarkers(examplePlaceOptions)
 
   let kaars_id="candle-wrapper";
+
+
+// je kan muziek afspelen met playMP3; wij hebben een paar: deathTune herhaald niet de  andere wel.
+document.addEventListener('keydown', e => {
+    if (e.key.toLowerCase() === '1') playMP3(suspenseLoop);
+    if (e.key.toLowerCase() === '2') playMP3(deathTune);
+    if (e.key.toLowerCase() === '3') playMP3(strudel1);
+    if (e.key.toLowerCase() === '4') playMP3(strudel2);
+    if (e.key.toLowerCase() === '5') playMP3(schwindl);
+    if (e.key.toLowerCase() === '0') hushMP3();
+  });
