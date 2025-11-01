@@ -563,31 +563,6 @@ window.onclick = function(event) {
 <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
-<script src="https://unpkg.com/@strudel/web@1.0.3"></script>
-
-<script type="module">
-
-/* async function readFile(filePath) {
-  const response = await fetch(filePath);
-  const fileContent = await response.text();
-  return fileContent
-}
-
-const music1 = await readFile('muziek/route1.strudel');
-const music2 = await readFile('muziek/route2.strudel'); */
-
-
-initStrudel();
-
-window.addEventListener('keydown', e => {
-  if (e.key === '1') n("<0 -3 0 -3 0 -3>, 2 4 <[6,8] [7,9] [8,10]>").scale("<C:minor D:mixolydian C:minor E:mixolydian>/4").gain(.5).play();
-  if (e.key === '2') n("<0 -3 0 -3 0 -3>, 2 4 <[6,8] [7,9]>").scale("<C:minor D:mixolydian C:minor E:mixolydian>/4").gain(.5).play();
-  if (e.key === '3') hush()
-});
-
-
-</script>
-
 <script type="module">
   // 1) Boot map
 
@@ -843,7 +818,7 @@ window.addEventListener('keydown', e => {
   }
 
   function hideAllInstruments() {
-    for(n=1;n<5;n++) {
+    for(var n=1;n<5;n++) {
       document.getElementById(`instrument${n}`).style.visibility = "hidden"
     }
   }
@@ -897,11 +872,6 @@ window.addEventListener('keydown', e => {
     );
 
 
-    for(i=0;i<placeOptions.length;i++) {
-      new maplibregl.Marker({element: el})
-      .setLngLat([4.9, 52.37])
-      .addTo(map);
-    }
   }
 
   hideAllInstruments()
@@ -917,6 +887,46 @@ window.addEventListener('keydown', e => {
       essential: true
     });
   }
+
+  let schwindl, suspenseLoop, deathTune, strudel1, strudel2;
+
+  schwindl = new Audio('muziek/[Free-scores.com]_schwindl-friedrich-trio-clavecin-136669 - page 1 and 2.mp3')
+  schwindl.loop = true;
+  suspenseLoop = new Audio('muziek/cursed%20die%20loop.mp3');
+  suspenseLoop.loop = true;
+  deathTune = new Audio('muziek/Death.mp3');
+  strudel1 = new Audio('muziek/route1.mp3');
+  strudel1.loop = true;
+  strudel2 = new Audio('muziek/route2.mp3');
+  strudel2.loop = true;
+
+  function hushMP3() {
+    suspenseLoop.pause();
+    suspenseLoop.currentTime = 0;
+    deathTune.pause();
+    deathTune.currentTime = 0;
+    strudel1.pause();
+    strudel1.currentTime = 0;
+    strudel2.pause();
+    strudel2.currentTime = 0;
+    schwindl.pause();
+    schwindl.currentTime = 0;
+  }
+
+  function playMP3(mp3) {
+    hushMP3()
+    mp3.play()
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key.toLowerCase() === '1') playMP3(suspenseLoop);
+    if (e.key.toLowerCase() === '2') playMP3(deathTune);
+    if (e.key.toLowerCase() === '3') playMP3(strudel1);
+    if (e.key.toLowerCase() === '4') playMP3(strudel2);
+    if (e.key.toLowerCase() === '5') playMP3(schwindl);
+    if (e.key.toLowerCase() === '0') hushMP3();
+    if (e.key.toLowerCase() === '-') zoomToPlace(10,10);
+  });
 
   // Core animation loop
   function animateAlong(lineFeature, marker, { speedKts = 2000000, loop = true, centerCamera = true } = {}) {
