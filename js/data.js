@@ -109,25 +109,39 @@ async function get_lijst_bemanning(voyage_id) {
 	// returns array of max (25) personsclusters (where #personobservations > 3) on voyage_id: persoonscluster_uri, naam
 
 	const sparql = `
-PREFIX picom: <https://personsincontext.org/model#>
-PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX hzs: <http://data.hetzinkendeschip.nl#>
-PREFIX schema: <https://schema.org/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+	# -------------------- Prefixes --------------------
+	PREFIX sc:    <https://schema.org/>
+	PREFIX picom: <https://personsincontext.org/model#>
+	PREFIX prov:  <http://www.w3.org/ns/prov#>
+	PREFIX hzs:   <http://data.hetzinkendeschip.nl#>
+	PREFIX schema:<https://schema.org/>
+	PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
 
-SELECT ?pr ?voyage (COUNT(DISTINCT ?po) AS ?obsCount)
-WHERE {
-  # 1. Een PersonReconstruction die afgeleid is van één of meer PersonObservations
-  ?pr  a               picom:PersonReconstruction ;
-       prov:wasDerivedFrom ?po .
+	# -------------------- Hoofd‑query --------------------
+	SELECT ?voyage ?pr ?naam (COUNT(DISTINCT ?po) AS ?obsCount)
+	WHERE {
+	  # 1. PersonReconstruction → PersonObservations
+	  ?pr a picom:PersonReconstruction ;
+	      prov:wasDerivedFrom ?po .
 
-  # 2. Elke betrokken PersonObservation heeft een outwardVoyage‑relatie
-  ?po  a               picom:PersonObservation ;
-       ( hzs:outwardVoyage | hzs:returnVoyage )  ?voyage .
-  FILTER ( STR(?pr) != "https://vocdata.nl/personcluster#" )
-}
-GROUP BY ?pr ?voyage
-HAVING (COUNT(DISTINCT ?po) >= 3)
+	  # 2. Haal **één** naam op via een sub‑select
+	  OPTIONAL {
+	    SELECT ?pr (MIN(?naamTmp) AS ?naam)   # MIN → lexicografisch eerste
+	    WHERE {
+	      ?pr schema:name ?naamTmp .
+	    }
+	    GROUP BY ?pr
+	  }
+
+	  # 3. Observations → outward‑ of return‑voyage
+	  ?po a picom:PersonObservation ;
+	      (hzs:outwardVoyage | hzs:returnVoyage) ?voyage .
+
+	  # 4. Exclude de specifieke cluster‑IRI
+	  FILTER ( STR(?pr) != "https://vocdata.nl/personcluster#" )
+	}
+	GROUP BY ?voyage ?pr ?naam
+	HAVING ( COUNT(DISTINCT ?po) >= 2 )
 	`;
 
 	const resultaten = await do_sparql(sparql,sparqlEndpointVOC);
