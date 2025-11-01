@@ -3,8 +3,12 @@ var stage=1;
 var reis=0;
 var departurePlaceUri;
 var voyageScheepstype;
+var voyages;
+var scheeptypen;
+var havens;
+var voyageId;
 
-gui_init();	// initialiseer spelbord (kaart tekening, dobbelstenen, brandende kaars, puntpasser + 4 instrumentplekken)
+gui_init();	// resets spelbord (kaart tekening, dobbelstenen, brandende kaars, puntpasser + 4 instrumentplekken)
 
 toon_startscherm();
 
@@ -40,7 +44,7 @@ function game_play(dialog_uri) {
 		
 	 case 2:
 		console.log("Stage 2: Vertrekhaven gekozen");
-		const departurePlaceUri=dialog_uri;
+		departurePlaceUri=dialog_uri;
 		const { lon, lat } = get_lon_lat(havens,departurePlaceUri);
 		stage++;
 		gui_zoom_to_plaats(lon, lat);
@@ -56,7 +60,7 @@ function game_play(dialog_uri) {
 		
 	case 4:
 		console.log("Stage 4: Minigame resultaat");
-		const guessedPlaceUri=dialog_uri;
+		guessedPlaceUri=dialog_uri;
 		stage++;
 		if (guessedPlaceUri==departurePlaceUri) {
 			toon_dialoog_minigame_plaats_goed();
@@ -72,17 +76,14 @@ function game_play(dialog_uri) {
 		scheeptypen=unieke_scheepstypen(voyages);
 //		schip_uri=keuze_scheepsnaam (plaats_uri + schip_uri > voyageId) - kan ook gezonken zijn 
 		stage++;
-		toon_keuze_dialoog_vertrekhaven(voyages, scheeptypen);
+		toon_keuze_dialoog_scheepstype(voyages, scheeptypen);
 		break;
 		
 	case 6: 
 		console.log("Stage 6: Minigame scheepstype");
-	
-		const voyageUri = dialog_uri;
+		stage++;
+		voyageUri = dialog_uri;
 		voyageScheepstype=get_scheeptype(voyageId);
-		
-//		show_minigame_scheepstype (3 afbeeldingen tonen, Laadvermogen, 	bemanning)
-
 		show_minigame_scheepstype(scheeptypen);
 		
 	case 7:
@@ -110,12 +111,16 @@ function game_play(dialog_uri) {
 	  case 10:
 		console.log("Stage 10: Start reis");
 //		toon_reis_animatie(voyageId) - tot halverwege
+		const { departurePlaceUri, arrivalPlaceUri } = get_voyage_places(voyageId);
+		stage++;
+		start_reis_animatie(voyageId);
+		break;
 
 	  case 11:
 		console.log("Stage 11: Scheepskist");
 		stage++;
-//		toon_scheepskist ( image game )
-		toon_scheepskist();
+		const { object_title, iiif_image_uri, description } = get_random_object();
+		toon_scheepskist(object_title, iiif_image_uri, description);
 		break;
 		
 	  case 12:
@@ -216,41 +221,100 @@ function toon_dialoog_minigame_plaats_goed() {
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
-		callback = gameplay();
-	)	
+		callback = gameplay()
+	)
 }
 
 function toon_dialoog_minigame_plaats_fout() {
-	
+	activateModal(
+		title = "Foute plaats gekozen!",
+		text = "intro....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = false,
+		callback = gameplay()
+	)
 }
 
-function toon_keuze_dialoog_vertrekhaven(voyages) {
-	
+function toon_keuze_dialoog_scheepstype(voyages, scheeptypen) {
+	//		show_minigame_scheepstype (3 afbeeldingen tonen, Laadvermogen, 	bemanning)
+
+	activateModal(
+		title = "Kies je schip",
+		text = "Op welk schip wil je varen?",
+		choicesObject = scheeptypen.map(scheeptype => ({ 'html': scheeptype.naam+'<br>'+scheeptype.iiif_image_uri, 'value': scheeptype.uri })),
+		mp3 = null,
+		userChoice = true,
+		canClose = false,
+		callback = game_play()
+	)
 }
 
 function toon_dialoog_minigame_scheeptype_goed() {
+	activateModal(
+		title = "Goede scheepstype gekozen!",
+		text = "intro....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = false,
+		callback = gameplay()
+	)
 }
 
 function toon_dialoog_minigame_scheeptype_fout() {
-	
+	activateModal(
+		title = "Foute scheepstype gekozen!",
+		text = "intro....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = false,
+		callback = gameplay()
+	)
 }
 
-function toon_scheepskist() {
-	
+function toon_scheepskist(object_title, iiif_image_uri, description) {
+	activateModal(
+		title = "Nieuw item voor in je scheepskist!",
+		text = "intro....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = false,
+		callback = gameplay()
+	)	
 }
 
 function toon_extra_cartografische_instrument(reis) {
-
+	gui_show_instrument(reis);
+	game_play
 }
 
 function toon_einde_reis() { // hoe lang erover gedaan, aanzetten tot nog een reis
-	
+	activateModal(
+		title = "Einde van de reis!",
+		text = "Je hebt dezze reis succesvol afgerond, het duurde x dagen, op naar de volgende reis voor nog meer ervaring op te doen.",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = true,
+		callback = gameplay()
+	)	
 }
 
 function end_of_game() { // dialoog die spel stopt, enige optie is F5 om nieuwe game te starten
-
+	activateModal(
+		title = "Einde van het spel!",
+		text = "Schip gezonken, einde van het spel. F5 om opnieuw te starten.",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = false,
+		callback = null
+	)
 }
-
 
 // helpers
 
