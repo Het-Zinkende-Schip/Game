@@ -3,7 +3,7 @@ const sparqlEndpointMASS='https://qlever.coret.org/mass';
 const sparqlEndpointWikidata='https://query.wikidata.org/sparql';
 
 
-function get_lijst_vertrekhavens(bekerking) {
+async function get_lijst_vertrekhavens(bekerking) {
 	// beperking="NL", geen beperking="ook buiten NL"
 	// returns array of (max 25) places: place_uri, place_name, long, lat
 	
@@ -33,7 +33,7 @@ function get_lijst_vertrekhavens(bekerking) {
 			(xsd:decimal(?latitude) >= 50.7 && xsd:decimal(?latitude) <= 53.7 &&
 			xsd:decimal(?longitude) >= 3.3 && xsd:decimal(?longitude) <= 7.3)
 		)
-		}
+		} GROUP BY  ?departurePlace ?placeId ?latitude ?longitude
 		ORDER BY ?departurePlace
 	`;
 
@@ -41,7 +41,7 @@ function get_lijst_vertrekhavens(bekerking) {
 	return resultaten;	
 }
 
-function get_lijst_reizen(vertrekplaats_uri) {
+async function get_lijst_reizen(vertrekplaats_uri) {
 	// let op: ook reizen waar het schip is gezonken
 	// returns array of (max 25) voyages starting in vertrekplaats: voyageID, scheepsnaam, scheeptype, image_url, laadvermogen, bemanning_grootte, duur_in_dagen, arrivalDate
 	
@@ -108,7 +108,7 @@ function get_lijst_reizen(vertrekplaats_uri) {
 	return resultaten;	
 }
 
-function get_lijst_bemanning(voyage_id) {
+async function get_lijst_bemanning(voyage_id) {
 	// returns array of max (25) personsclusters (where #personobservations > 3) on voyage_id: persoonscluster_uri, naam
 
 	const sparql = `
@@ -119,7 +119,7 @@ function get_lijst_bemanning(voyage_id) {
 	return resultaten;	
 }
 
-function get_levensloop(persoonscluster_uri) {
+async function get_levensloop(persoonscluster_uri) {
 	// returns array of voyages of person: naam, functie, vertrek_datum, vertrek_plaats, aankomst_datum, aankomst_plaats, redenEindecontract
 	const sparql = `
 	`;
@@ -128,7 +128,7 @@ function get_levensloop(persoonscluster_uri) {
 	return resultaten;	
 }
 
-function get_random object() {
+async function get_random_object() {
 	// returns object_title, iiif_image_uri, description
 }
 
