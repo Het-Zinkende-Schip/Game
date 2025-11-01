@@ -93,8 +93,7 @@ async function get_lijst_reizen(vertrekplaats_uri) {
 				IF(
 				BOUND(?arrivalDate) && BOUND(?departureDate),
 				((?jaarA0 - ?jaarD0) * 365) +
-				((?maandA0 - ?maandD0) * 30) +
-				(?dagA0 - ?dagD0),
+
 				""
 				)
 				AS ?duur_in_dagen
@@ -112,7 +111,25 @@ async function get_lijst_bemanning(voyage_id) {
 	// returns array of max (25) personsclusters (where #personobservations > 3) on voyage_id: persoonscluster_uri, naam
 
 	const sparql = `
-	http://yasgui.org/short/vMyf7JM0XR
+PREFIX picom: <https://personsincontext.org/model#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX hzs: <http://data.hetzinkendeschip.nl#>
+PREFIX schema: <https://schema.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?pr ?voyage (COUNT(DISTINCT ?po) AS ?obsCount)
+WHERE {
+  # 1. Een PersonReconstruction die afgeleid is van één of meer PersonObservations
+  ?pr  a               picom:PersonReconstruction ;
+       prov:wasDerivedFrom ?po .
+
+  # 2. Elke betrokken PersonObservation heeft een outwardVoyage‑relatie
+  ?po  a               picom:PersonObservation ;
+       ( hzs:outwardVoyage | hzs:returnVoyage )  ?voyage .
+  FILTER ( STR(?pr) != "https://vocdata.nl/personcluster#" )
+}
+GROUP BY ?pr ?voyage
+HAVING (COUNT(DISTINCT ?po) >= 3)
 	`;
 
 	const resultaten = await do_sparql(sparql,sparqlEndpointVOC);
