@@ -382,6 +382,22 @@
       content: "";
     }
 
+    #caliper-wrapper, #die-wrapper {
+      position: fixed;     /* relative to the viewport */
+      z-index: 20;         /* above map, modal, etc. */
+      pointer-events: auto;
+    }
+
+    #caliper-wrapper {
+      left: 0%;
+      bottom: 10%;            /* upper-left corner */
+    }
+
+    #die-wrapper {
+      right: 5%;
+      top: 20%;         /* lower-right corner */
+    }
+
   </style>
 </head>
 <body>
@@ -416,12 +432,20 @@
 
 </div>
 
+<div id="caliper-wrapper">
+  <img id="caliper" src="icons/ship.png" width="100" />
+</div>
+<div id="die-wrapper">
+  <img id="die" src="icons/ship.png" width="100" />
+</div>
 
 <script>
 
 console.log("map_tests.html script start");
 
-let kaars_id="candle-wrapper";
+let kaars_id="candle-wrapper"
+let puntpasser_id="caliper-wrapper";
+let dobbelsteen_id="die-wrapper";
 
 const modal = document.getElementById("myModal");
 const modalHeader = document.querySelector('#myModal .modal-header');
