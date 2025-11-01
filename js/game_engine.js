@@ -7,6 +7,11 @@ var voyages;
 var scheeptypen;
 var havens;
 var voyageId;
+var voyageUri;
+var persoon_uri;
+var bemanning;
+var haven_uri;
+var guessedPlaceUri;
 
 gui_init();	// resets spelbord (kaart tekening, dobbelstenen, brandende kaars, puntpasser + 4 instrumentplekken)
 
@@ -19,9 +24,11 @@ let dobbelsteen_id="dobbelsteen";	// identifier van de div in gui
 document.getElementById(kaars_id).addEventListener("click", function() {
   toon_kaars();
 });
+
 document.getElementById(puntpasser_id).addEventListener("click", function() {
   toon_puntpasser();
 });
+
 document.getElementById(dobbelsteen_id).addEventListener("click", function() {
   game_play();
 });
@@ -31,8 +38,6 @@ function game_play(dialog_uri) {
 	switch (stage) {
 	  case 1:
 		console.log("Stage 1: Kies vertrekhaven");
-
-//		plaats_uri=keuze_vertrekhaven (6 willekeurige havens tonen, dobbelsteen bepaald vertrekhaven)
 		if (reis==1) {
 			havens=get_lijst_vertrekhavens("NL");
 		} else {
@@ -41,19 +46,17 @@ function game_play(dialog_uri) {
 		stage++;
 		toon_keuze_dialoog_vertrekhaven(havens);
 		break;
-		
+
 	 case 2:
-		console.log("Stage 2: Vertrekhaven gekozen");
-		departurePlaceUri=dialog_uri;
-		const { lon, lat } = get_lon_lat(havens,departurePlaceUri);
+		console.log("Stage 2: Leg markers uit");
+		haven_uri=dialog_uri;
+		const place_name = havens.find(haven => haven.uri === haven_uri).naam;
 		stage++;
-		gui_zoom_to_plaats(lon, lat);
+		toon_uitleg_markers(place_name);
 		break;
-		
+
 	 case 3:
 		console.log("Stage 3: Minigame vertrekhavens");
-//		show_minigame_plaats (kan punten opleveringen voor score, 3 google maps met coordinaten, welke is de vertrekplaats)
-//		toon_dialoeg_goed / toon_dialoog_fout
 		stage++;
 		show_minigame_plaats(havens);
 		break;
@@ -67,84 +70,96 @@ function game_play(dialog_uri) {
 		} else {
 			toon_dialoog_minigame_plaats_fout();			
 		}
-//		toon_speelbord
 		break;
-	case 5:
-		console.log("Stage 5: Kies scheepstype (eigenlijk voyage)");
 
+	case 5:
+		console.log("Stage 5: Vertrekhaven gekozen, zoom naar plaats");
+		departurePlaceUri=dialog_uri;
+		const { lon, lat } = get_lon_lat(havens,departurePlaceUri);
+		stage++;
+		gui_zoom_to_plaats(lon, lat);
+		break;
+
+	case 6:
+		console.log("Stage 6: Kies scheepstype (eigenlijk voyage)");
 		voyages=get_lijst_reizen(departurePlaceUri);
-		scheeptypen=unieke_scheepstypen(voyages);
-//		schip_uri=keuze_scheepsnaam (plaats_uri + schip_uri > voyageId) - kan ook gezonken zijn 
+		scheeptypen=get_unieke_scheepstypen(voyages);
 		stage++;
 		toon_keuze_dialoog_scheepstype(voyages, scheeptypen);
 		break;
 		
-	case 6: 
-		console.log("Stage 6: Minigame scheepstype");
+	case 7: 
+		console.log("Stage 7: Minigame scheepstype");
 		stage++;
 		voyageUri = dialog_uri;
 		voyageScheepstype=get_scheeptype(voyageId);
 		show_minigame_scheepstype(scheeptypen);
-		
-	case 7:
-		console.log("Stage 6: Minigame resultaat");
-	
+		break;
+
+	case 8:
+		console.log("Stage 8: Minigame resultaat");
 		const guessedScheepstype=dialog_uri;
 		stage++;
-//		toon_dialoog_goed / toon_dialoog_fout
 		if (guessedScheepstype==voyageScheepstype) {
 			toon_dialoog_minigame_scheeptype_goed();
 		} else {
 			toon_dialoog_minigame_scheeptype_fout();			
 		}
-
 //		toon_speelbord
 		break;
-	  case 8:
-		console.log("Stage 8: Kies bemanningslid");
-//		persoon_uri=keuze_persoon (is aan gekomen / is overleden)
 
 	  case 9:
-		console.log("Stage 8: Toon levensloop");
-//		toon_levensloop_reizen(persoon_uri) -  button "ga aan boord"
+		console.log("Stage 9: Kies bemanningslid");
+		bemanning= get_lijst_bemanning(voyage_id)
+		toon_keuze_bemanningslid(bemanning);
+		stage++;
+		break;	
 
 	  case 10:
-		console.log("Stage 10: Start reis");
-//		toon_reis_animatie(voyageId) - tot halverwege
-		const { departurePlaceUri, arrivalPlaceUri } = get_voyage_places(voyageId);
+		console.log("Stage 10: Toon levensloop");
+		persoon_uri=dialog_uri;
 		stage++;
-		start_reis_animatie(voyageId);
+		levensloop=get_levensloop(persoon_uri);
+		toon_levensloop_reizen(levensloop);
 		break;
 
 	  case 11:
-		console.log("Stage 11: Scheepskist");
+		console.log("Stage 11: Start reis");
+		const { departurePlaceUri, arrivalPlaceUri } = get_voyage_places(voyageId);
+		stage++;
+		start_reis_animatie(voyageId); // TODO: naam in GUI code
+		break;
+
+	  case 12:
+		console.log("Stage 12: Scheepskist");
 		stage++;
 		const { object_title, iiif_image_uri, description } = get_random_object();
 		toon_scheepskist(object_title, iiif_image_uri, description);
 		break;
 		
-	  case 12:
-		console.log("Stage 12: Naar aankomsthaven of gezonken");
+	  case 13:
+		console.log("Stage 13: Naar aankomsthaven of gezonken");
 		stage++;
-//		- vervolg_animatie_naar_arrivalplace
+		// todo controleer of schip gezonken is
+		vervolg_animatie_naar_arrivalplace(); // TODO: naam in GUI code
 //		of
-		stage=20;
+//		stage=20;
 //		- toon_zinkend_schip > end-of-game (f5)
 		break;
 		
-	  case 13:
-		console.log("Stage 13: Bestemming bereikt");
+	  case 14:
+		console.log("Stage 14: Bestemming bereikt");
 		stage++;
 		toon_einde_reis();	// wellicht game
 		break;
 		
-	  case 14:
-		console.log("Stage 14: extra cartografisch instrument");
+	  case 15:
+		console.log("Stage 15: extra cartografisch instrument");
 		stage++;
 		toon_extra_cartografische_instrument(reis);
 		break;
 		
-	  case 15:
+	  case 16:
 		console.log("Stage 15: reset loop");
 		reis++;
 		stage=1;
@@ -213,6 +228,18 @@ function toon_puntpasser() {
 	)	
 }
 
+function toon_uitleg_markers(place_name) {
+	activateModal(
+		title = "Weet je waar deze haven van "+place_name+" ligt?",
+		text = "klik zo op een marker op de kaart om de locatie van de haven aan te geven.",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = false,
+		callback = gameplay()
+	)	
+}
+
 function toon_dialoog_minigame_plaats_goed() {
 	activateModal(
 		title = "Goede plaats gekozen!",
@@ -249,6 +276,30 @@ function toon_keuze_dialoog_scheepstype(voyages, scheeptypen) {
 		canClose = false,
 		callback = game_play()
 	)
+}
+
+function toon_keuze_bemanningslid(bemanning) {
+	activateModal(
+		title = "Kies een bemanningslid",
+		text = "Welk bemanningslid wil je volgen?",
+		choicesObject = bemanning.map(persoon => ({ 'html': persoon.naam, 'value': persoon.persoonscluster_uri })),
+		mp3 = null,
+		userChoice = true,
+		canClose = false,
+		callback = game_play()
+	)
+}	
+
+function toon_levensloop_reizen(levensloop) {
+	activateModal(
+		title = "Levensloop van bemanningslid {naam}",
+		text = "lijst van reizen TODO....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = true,
+		callback = gameplay()
+	)	
 }
 
 function toon_dialoog_minigame_scheeptype_goed() {
