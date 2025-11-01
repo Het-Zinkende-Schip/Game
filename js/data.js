@@ -9,7 +9,7 @@ function get_lijst_vertrekhavens(bekerking) {
 	
 	const sparql = `
 		# http://yasgui.org/short/MHcZmpPbBX
-		
+
 		PREFIX hzs: <http://data.hetzinkendeschip.nl#>
 		PREFIX schema: <https://schema.org/>
 		PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -46,6 +46,62 @@ function get_lijst_reizen(vertrekplaats_uri) {
 	// returns array of (max 25) voyages starting in vertrekplaats: voyageID, scheepsnaam, scheeptype, image_url, laadvermogen, bemanning_grootte, duur_in_dagen, arrivalDate
 	
 	const sparql = `
+		# http://yasgui.org/short/tc3E8bUt4L
+		PREFIX hzs: <http://data.hetzinkendeschip.nl#>
+		PREFIX schema: <https://schema.org/>
+		PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+		#	// returns array of (max 25) voyages starting in vertrekplaats: voyageID, scheepsnaam, scheeptype, image_url, laadvermogen, bemanning_grootte, duur_in_dagen, arrivalDate
+
+
+		SELECT ?voyageID ?departurePlace ?scheepsnaam ?scheepstype ?laadvermogen 
+				?departureDate ?arrivalDate ?image_url ?bemanning_grootte ?duur_in_dagen
+		WHERE {
+		
+			VALUES ?departurePlace { "Texel" }
+
+			?voyageID hzs:departurePlace ?departurePlace .
+			OPTIONAL { ?voyageID hzs:shipName ?scheepsnaam . }
+			OPTIONAL { ?voyageID hzs:typeOfShip ?scheepstype . }
+			OPTIONAL { ?voyageID hzs:shipTonnage ?laadvermogen . }
+
+			OPTIONAL { ?voyageID hzs:departureDate ?departureDate. }
+			OPTIONAL { ?voyageID hzs:arrivalDate ?arrivalDate. }
+
+			BIND("https://www.hetzinkendeschip.nl/images/image.jpg" AS ?image_url)
+			BIND("bemanning_grootte" AS ?bemanning_grootte)
+
+			BIND(IF(BOUND(?arrivalDate), STR(?arrivalDate), "") AS ?arrivalStr)
+			BIND(IF(BOUND(?departureDate), STR(?departureDate), "") AS ?departureStr)
+
+			BIND(xsd:integer(SUBSTR(?arrivalStr, 1, 4)) AS ?jaarA)
+			BIND(xsd:integer(SUBSTR(?departureStr, 1, 4)) AS ?jaarD)
+			BIND(xsd:integer(SUBSTR(?arrivalStr, 6, 2)) AS ?maandA)
+			BIND(xsd:integer(SUBSTR(?departureStr, 6, 2)) AS ?maandD)
+			BIND(xsd:integer(SUBSTR(?arrivalStr, 9, 2)) AS ?dagA)
+			BIND(xsd:integer(SUBSTR(?departureStr, 9, 2)) AS ?dagD)
+
+			# dingen kunnene null zijn
+			BIND(COALESCE(?jaarA, 0) AS ?jaarA0)
+			BIND(COALESCE(?jaarD, 0) AS ?jaarD0)
+			BIND(COALESCE(?maandA, 0) AS ?maandA0)
+			BIND(COALESCE(?maandD, 0) AS ?maandD0)
+			BIND(COALESCE(?dagA, 0) AS ?dagA0)
+			BIND(COALESCE(?dagD, 0) AS ?dagD0)
+		
+			BIND(
+				IF(
+				BOUND(?arrivalDate) && BOUND(?departureDate),
+				((?jaarA0 - ?jaarD0) * 365) +
+				((?maandA0 - ?maandD0) * 30) +
+				(?dagA0 - ?dagD0),
+				""
+				)
+				AS ?duur_in_dagen
+			)
+
+		}
+		ORDER BY ?voyageID
 	`;
 
 	const resultaten = await do_sparql(sparql,sparqlEndpointVOC);
