@@ -10,6 +10,7 @@
       height:100%;
       margin:0;
       background:#2e1f02;
+      overflow:hidden;
     }
 
     .map-area {
@@ -28,7 +29,7 @@
 
     #map {
       width:100%;
-      height:100%;
+      height:88%;
       position:relative;
       z-index:1;
     }
@@ -44,27 +45,267 @@
       transform-origin:center center;
     }
 
+    .dialog-area {
+
+    }
+
     /* Keep pixel-art crisp when scaled */
     canvas, .maplibregl-canvas { image-rendering: pixelated; }
 
+    /* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal2 */
+
+    /* The Modal (background) */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 4; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+      position: relative;
+      background-image: url("images/vintage-paper-texture-1504806601t0F-dialog.png");
+      margin: auto;
+      padding: 0;
+      border: 1px solid #888;
+      width: 80%;
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+      -webkit-animation-name: animatetop;
+      -webkit-animation-duration: 0.4s;
+      animation-name: animatetop;
+      animation-duration: 0.4s
+    }
+
+    /* Add Animation */
+    @-webkit-keyframes animatetop {
+      from {top:-300px; opacity:0} 
+      to {top:0; opacity:1}
+    }
+
+    @keyframes animatetop {
+      from {top:-300px; opacity:0}
+      to {top:0; opacity:1}
+    }
+
+    /* The Close Button */
+    .close {
+      color: white;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      margin: .5em;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .modal-header {
+      padding: 2px 16px;
+      background-color: #0000004d;
+      color: white;
+    }
+
+    .modal-body {padding: 2px 16px;}
+
+    .modal-footer {
+      padding: 2px 16px;
+      background-color: #0000004d;
+      color: white;
+    }
+
+    .choicesContainer {
+      margin: 10px;
+      background-color: #ffffffb1;
+    }
+
+    .choice {
+      color: rgb(250, 171, 171);
+      background-color: #000000b1;
+      border: #000;
+      padding: 1em;
+      margin: 1em;
+      float: left;
+    }
   </style>
 </head>
 <body>
+
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="close">&times;</div>
+    <div class="modal-header">
+      <h2>Modal Header</h2>
+    </div>
+    <div class="modal-body">
+      <p>Some text in the Modal Body</p>
+      <p>Some other text...</p>
+    </div>
+    <div class="modal-footer">
+      <h3>Modal Footer</h3>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+
+const modal = document.getElementById("myModal");
+const modalHeader = document.querySelector('#myModal .modal-header');
+const modalBody = document.querySelector('#myModal .modal-body');
+const modalFooter = document.querySelector('#myModal .modal-footer');
+const closeModalX = document.getElementsByClassName("close")[0];
+
+var modalCanClose = true;
+var modalCallback = function() {}
+
+setModalCanClose = function(canClose) {
+  modalCanClose = canClose?true:false;
+  if (modalCanClose) {
+    closeModalX.style.visibility = "visible";
+  } else {
+    closeModalX.style.visibility = "hidden";
+  }
+}
+
+setModalContent = function(header, body, footer) {
+  modalHeader.innerHTML = `<h2>${header}</h2>`;
+  modalBody.innerHTML = `<div>${body}</div>`;
+  modalFooter.innerHTML = `<h3>${footer}</h3>`;
+}
+
+setModalContent(
+  "Het zinkende schip... of wordt jij een cartograaf",
+  "<img src='icons/ship.png' width=300></img>",
+  ""
+)
+
+openModal = function() {
+  modal.style.display = "block";
+}
+
+closeModal = function() {
+  if (modalCanClose) modal.style.display = "none";
+}
+
+
+activateModal = function(title, text, choicesObject, mp3, userChoice = true, canClose = true, callback = function(value) {
+  console.log('User chose:', value);
+}) {
+  modal.style.display = "none";
+
+  const choicesHTML = choicesObject.map(choice => `
+    <div class="choice" data-value="${choice.value}">
+      ${choice.html}
+    </div>
+  `).join('');
+
+  const bodyHTML = `
+    <div class="modalText">${text}</div>
+    <div class="choicesContainer">${choicesHTML}</div>
+  `;
+
+  setModalContent(
+    title,
+    bodyHTML,
+    ""
+  )
+
+  modal.querySelectorAll('.choice').forEach(div => {
+    div.addEventListener('click', () => {
+      const value = div.getAttribute('data-value');
+      console.log('User chose:', value);
+      if (typeof userChoice === 'function') userChoice(value);
+    });
+  });
+
+  setModalCanClose(canClose)
+
+  openModal()
+}
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'd') openModal()
+  if (e.key === 'c') setModalCanClose(!modalCanClose)
+  if (e.key === 'p') activateModal(
+    title = "Kies je scheep",
+    text = "Welke is de juiste soort?",
+    choicesObject = [
+      {
+        'html': 'Een grote:<br/> <img src="icons/ship.png" width="300">',
+        'value': 'DaShit1'
+      },
+      {
+        'html': 'Een kleine:<br/> <img src="icons/ship.png" width="200">',
+        'value': 'DaShit2'
+      }
+    ],
+    mp3 = null,
+    userChoice = true,
+    canClose = false,
+    callback = function(value) {}
+  )
+});
+
+closeModalX.onclick = function() {
+  closeModal()
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    closeModal()
+  }
+}
+</script>
+
+
 <div class="map-area">
   <div class="map-clip">
     <div id="map"></div>
   </div>
 </div>
-  <img src="images/vintage-paper-texture-1504806601t0F-background.png" class="map-border" alt="">
+<img src="images/vintage-paper-texture-1504806601t0F-background.png" class="map-border" alt="">
 
 <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
-<script type="module">
-import * as Strudel from "https://strudel.cc/releases/latest/strudel.mjs";
-await Strudel.init();
+<script src="https://unpkg.com/@strudel/web@1.0.3"></script>
 
-const music1 = 
+<script type="module">
+
+/* async function readFile(filePath) {
+  const response = await fetch(filePath);
+  const fileContent = await response.text();
+  return fileContent
+}
+
+const music1 = await readFile('muziek/route1.strudel');
+const music2 = await readFile('muziek/route2.strudel'); */
+
+
+initStrudel();
+
+window.addEventListener('keydown', e => {
+  if (e.key === '1') n("<0 -3 0 -3 0 -3>, 2 4 <[6,8] [7,9] [8,10]>").scale("<C:minor D:mixolydian C:minor E:mixolydian>/4").gain(.5).play();
+  if (e.key === '2') n("<0 -3 0 -3 0 -3>, 2 4 <[6,8] [7,9]>").scale("<C:minor D:mixolydian C:minor E:mixolydian>/4").gain(.5).play();
+  if (e.key === '3') hush()
+});
+
 
 </script>
 
