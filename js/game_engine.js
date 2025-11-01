@@ -38,15 +38,17 @@ async function game_play(dialog_uri) {
 		} else {
 			havens=await get_lijst_vertrekhavens("all");
 		}
-		console
 		stage++;
 		toon_keuze_dialoog_vertrekhaven(havens);
 		break;
 
 	 case 2:
-		console.log("Stage 2: Leg markers uit");
+		console.log("Stage 2: Leg markers uit > "+dialog_uri);
+
 		haven_uri=dialog_uri;
-		const place_name = havens.find(haven => haven.uri === haven_uri).naam;
+
+		//const place_name = havens.find(haven => haven.placeId).departurePlace;
+		const place_name = "test";
 		stage++;
 		toon_uitleg_markers(place_name);
 		break;
@@ -177,11 +179,11 @@ function toon_keuze_dialoog_vertrekhaven(havens) {
 	activateModal(
 		title = "Kies je vertrekhaven",
 		text = "Vanuit welke haven wil je vertrekken?",
-		choicesObject = havens.slice(0,6).map(haven => ({ 'html': haven.departurePlace, 'value': haven.departurePlaceUri })),
+		choicesObject = havens.slice(0,6).map(haven => ({ 'html': haven.departurePlace, 'value': haven.placeId })),
 		mp3 = null,
 		userChoice = true,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)
 }
 
@@ -232,7 +234,7 @@ function toon_uitleg_markers(place_name) {
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)	
 }
 
@@ -244,7 +246,7 @@ function toon_dialoog_minigame_plaats_goed() {
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)
 }
 
@@ -260,7 +262,7 @@ function show_minigame_plaats(havens) {
 		latitude: haven.latitude
 	})).slice(0,5);
 
-	activatePlaceChoiceMarkers(placeOptions = [], game_play());
+	activatePlaceChoiceMarkers(placeOptions = [], game_play);
 };
 
 function toon_dialoog_minigame_plaats_fout() {
@@ -271,7 +273,7 @@ function toon_dialoog_minigame_plaats_fout() {
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)
 }
 
@@ -286,7 +288,7 @@ function toon_keuze_dialoog_scheepstype(voyages, scheeptypen) {
 		mp3 = null,
 		userChoice = true,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)
 }
 
@@ -298,7 +300,7 @@ function toon_keuze_bemanningslid(bemanning) {
 		mp3 = null,
 		userChoice = true,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)
 }	
 
@@ -310,7 +312,7 @@ function toon_levensloop_reizen(levensloop) {
 		mp3 = null,
 		userChoice = false,
 		canClose = true,
-		callback = game_play()
+		callback = game_play
 	)	
 }
 
@@ -322,7 +324,7 @@ function toon_dialoog_minigame_scheeptype_goed() {
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)
 }
 
@@ -334,7 +336,7 @@ function toon_dialoog_minigame_scheeptype_fout() {
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)
 }
 
@@ -346,7 +348,7 @@ function toon_scheepskist(object_title, iiif_image_uri, description) {
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
-		callback = game_play()
+		callback = game_play
 	)	
 }
 
@@ -363,7 +365,7 @@ function toon_einde_reis() { // hoe lang erover gedaan, aanzetten tot nog een re
 		mp3 = null,
 		userChoice = false,
 		canClose = true,
-		callback = game_play()
+		callback = game_play
 	)	
 }
 
