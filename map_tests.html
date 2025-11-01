@@ -388,14 +388,24 @@
       content: "";
     }
 
-    #caliper-wrapper, #die-wrapper {
-      position: fixed;     /* relative to the viewport */
-      z-index: 20;         /* above map, modal, etc. */
-      pointer-events: auto;
+    #caliper-wrapper {
+      position: fixed;
+      z-index: 20;
+      pointer-events: none;
+      transform: rotate(-30deg);
+      transform-origin: center;
+    }
+    
+    #die-wrapper {
+      position: fixed;
+      z-index: 20;
+      pointer-events: none;
+      /* transform: rotate(-30deg); 
+      transform-origin: center; */
     }
 
     #caliper-wrapper {
-      left: 0%;
+      left: -5%;
       bottom: 10%;            /* upper-left corner */
     }
 
@@ -439,7 +449,7 @@
 </div>
 
 <div id="caliper-wrapper">
-  <img id="caliper" src="icons/ship.png" width="100" />
+  <img id="caliper" src="images/instrumenten/Rijksmuseum_puntpasser_transparant.png" width="400" />
 </div>
 <div id="die-wrapper">
   <img id="die" src="icons/ship.png" width="100" />
@@ -591,7 +601,7 @@ window.onclick = function(event) {
 
 <div class="map-border-instrument-container">
   <img class="instrument" id="instrument1" src="images/instrumenten/Rijksmuseum_kompas_transparant.png" width="90"></img>
-  <img class="instrument" id="instrument2" src="images/instrumenten/Rijksmuseum_puntpasser_transparant.png" width="90"></img>
+  <img class="instrument" id="instrument2" src="images/instrumenten/Rijksmuseum_puntpasser_2_transparant.png" width="90"></img>
   <img class="instrument" id="instrument3" src="images/instrumenten/Rijksmuseum_sextant_transparant.png" width="90"></img>
   <img class="instrument" id="instrument4" src="icons/ship-icon.png" width="90"></img>
 </div>
