@@ -203,8 +203,8 @@ function toon_startscherm() {
 function toon_kaars() {
 	// open dialog met disclaimer, schaduwkant belichting
 	activateModal(
-		title = "De schaduwkant van het Zinkende Schip!",
-		text = "intro....",
+		title = "Schaduwkant",
+		text = "In de periode dat de Verenigde Oostindische Compagnie (VOC) van 1602 t/m 1795 actief was, had het bedrijf een handelsmonopolie voor het gebied ten oosten van Kaap de Goede Hoop tot de Straat Magalhaen. Dit betekende dat de organisatie een leger mocht hebben, en diplomatieke contacten met lokale en regionale bestuurders onderhield. <br> In het streven naar het maken van zoveel mogelijk winst, zette de VOC deze middelen veelvuldig in, met alle gevolgen van dien. Er waren dwangconstructies waarbij lokale bevolking bijv. een bepaald quota koffie per periode moest leveren, die met (extreem) geweld gehandhaafd werden. Ook werd er, indien deze praktijk al in de regio aanwezig was, gebruik gemaakt van tot slaaf gemaakten ('lijfeigenen' genoemd). Graag verwijzen we naar een aantal bronnen waar u meer kunt lezen over deze verschillende facetten van deze historische organisatie. <br> <a href>https://www.vocsite.nl/geschiedenis/slavernij/</href> <br><a href>https://www.zeeuwsarchief.nl/zoekgids/onderzoek-naar-de-voc/</href>",
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -217,7 +217,7 @@ function toon_puntpasser() {
 	// open dialog met uitleg cartografie
 	activateModal(
 		title = "Over cartografie",
-		text = "intro....",
+		text = "De wetenschap en techniek om geografische informatie te visualiseren met behulp van kaarten wordt cartografie genoemd. De maker van zo'n kaart heet een cartograaf. Er is niet één 'perfecte' of 'juiste' kaart van een gebied; kaarten worden altijd gemaakt met een bepaalde doelgroep in gedachten, en de interpretatie van de data die ze overbrengen is dus altijd in een mate gekleurd. Dit zien we bijvoorbeeld terugkomen in elementen als de keuze wat centraal afgebeeld is op de kaart, welke projectie gebruikt is, wat wel en niet geduid is, etc. Wil je meer te weten komen over dit vakgebied? Bekijk dan het werk van dr. Marco van Egmond <a href>https://uu.academia.edu/MarcovanEgmond</href> of lees dit artikel <a href>https://www.sg.uu.nl/artikelen/2021/02/de-fantasieen-fouten-en-vaardigheden-van-vroegere-kaartenmakers</href>",
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -241,7 +241,7 @@ function toon_uitleg_markers(place_name) {
 function toon_dialoog_minigame_plaats_goed() {
 	activateModal(
 		title = "Goede plaats gekozen!",
-		text = "intro....",
+		text = "Ja, dat klopt! ",
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -268,7 +268,7 @@ function show_minigame_plaats(havens) {
 function toon_dialoog_minigame_plaats_fout() {
 	activateModal(
 		title = "Foute plaats gekozen!",
-		text = "intro....",
+		text = "Helaas, dat klopt niet. {Plaats} ligt hier # navigeer naar plaats",
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -282,7 +282,7 @@ function toon_keuze_dialoog_scheepstype(voyages, scheeptypen) {
 
 	activateModal(
 		title = "Kies je schip",
-		text = "Op welk schip wil je varen?",
+		text = "Er zijn verschillende schepen vanuit deze haven vertrokken, bij welk schip monster jij aan?",
 		choicesObject = scheeptypen.map(scheeptype => (
 			{ 'html': scheeptype.naam+'<br><img src="'+scheeptype.iiif_image_uri+'" alt="'+scheeptype.naam+'"/>', 'value': scheeptype.uri })),
 		mp3 = null,
@@ -295,7 +295,7 @@ function toon_keuze_dialoog_scheepstype(voyages, scheeptypen) {
 function toon_keuze_bemanningslid(bemanning) {
 	activateModal(
 		title = "Kies een bemanningslid",
-		text = "Welk bemanningslid wil je volgen?",
+		text = "Welk bemanningslid wil je schaduwen?",
 		choicesObject = bemanning.map(persoon => ({ 'html': persoon.naam, 'value': persoon.persoonscluster_uri })),
 		mp3 = null,
 		userChoice = true,
@@ -307,7 +307,7 @@ function toon_keuze_bemanningslid(bemanning) {
 function toon_levensloop_reizen(levensloop) {
 	activateModal(
 		title = "Levensloop van bemanningslid {naam}",
-		text = "lijst van reizen TODO....",
+		text = "Je treft {naam} op deze reis aan boord van {schip}, maar dankzij de beschikbaar gemaakte datasets weten we een aantal elementen van zijn verdere carrière:", # Check twee auto-fill {} items.
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -319,7 +319,7 @@ function toon_levensloop_reizen(levensloop) {
 function toon_dialoog_minigame_scheeptype_goed() {
 	activateModal(
 		title = "Goede scheepstype gekozen!",
-		text = "intro....",
+		text = "Ja, dat klopt!",
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -331,7 +331,7 @@ function toon_dialoog_minigame_scheeptype_goed() {
 function toon_dialoog_minigame_scheeptype_fout() {
 	activateModal(
 		title = "Foute scheepstype gekozen!",
-		text = "intro....",
+		text = "Helaas, dat klopt niet. Jij koos een +type_fout+. De correcte afbeelding is {afbeelding}.", # Check {}.
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -343,7 +343,7 @@ function toon_dialoog_minigame_scheeptype_fout() {
 function toon_scheepskist(object_title, iiif_image_uri, description) {
 	activateModal(
 		title = "Nieuw item voor in je scheepskist!",
-		text = "intro....",
+		text = "Er waren allerlei objecten aan boord, bijvoorbeeld: ...",
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -360,7 +360,7 @@ function toon_extra_cartografische_instrument(reis) {
 function toon_einde_reis() { // hoe lang erover gedaan, aanzetten tot nog een reis
 	activateModal(
 		title = "Einde van de reis!",
-		text = "Je hebt deze reis succesvol afgerond, het duurde x dagen, op naar de volgende reis voor nog meer ervaring op te doen.",
+		text = "Je bent na {x} dagen veilig aangekomen, gefeliciteerd. Met de ervaring die je deze reis opgedaan hebt, verdien je een volgende gereedschap voor je cartografische gereedschapskist. Wat wordt jouw volgende reis?", #Check {}
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -372,7 +372,7 @@ function toon_einde_reis() { // hoe lang erover gedaan, aanzetten tot nog een re
 function end_of_game() { // dialoog die spel stopt, enige optie is F5 om nieuwe game te starten
 	activateModal(
 		title = "Einde van het spel!",
-		text = "Schip gezonken, einde van het spel. F5 om opnieuw te starten.",
+		text = "Oh nee, het schip is gezonken. Game over. Druk op F5 om het spel opnieuw te starten.",
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
