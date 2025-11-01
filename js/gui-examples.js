@@ -14,5 +14,10 @@
     mp3 = null,
     userChoice = true,
     canClose = false,
-    callback = function(value) {}
+    callback = function(value) {
+        
+    }
   )
+
+zoomToPlace(lng = 10, lat = 10)
+

@@ -117,7 +117,10 @@
       color: white;
     }
 
-    .modal-body {padding: 2px 16px;}
+    .modal-body {
+      background-color: #ffffffb1;
+      padding: 2px 16px;
+    }
 
     .modal-footer {
       padding: 2px 16px;
@@ -128,15 +131,23 @@
     .choicesContainer {
       margin: 10px;
       background-color: #ffffffb1;
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
     }
 
     .choice {
       color: rgb(250, 171, 171);
       background-color: #000000b1;
-      border: #000;
+      border: #000 7px solid;
       padding: 1em;
-      margin: 1em;
-      float: left;
+      margin: 0;
+    }
+
+    .choice:hover {
+      border: #eb5555 7px solid;
+      padding: 1em;
+      margin: 0;
     }
   </style>
 </head>
@@ -228,8 +239,8 @@ activateModal = function(title, text, choicesObject, mp3, userChoice = true, can
   modal.querySelectorAll('.choice').forEach(div => {
     div.addEventListener('click', () => {
       const value = div.getAttribute('data-value');
-      console.log('User chose:', value);
-      if (typeof userChoice === 'function') userChoice(value);
+      callback(value);
+      modal.style.display = "none";
     });
   });
 
@@ -257,7 +268,9 @@ window.addEventListener('keydown', e => {
     mp3 = null,
     userChoice = true,
     canClose = false,
-    callback = function(value) {}
+    callback = function(value) {
+      console.log('User chose:', value);
+    }
   )
 });
 
@@ -563,6 +576,16 @@ window.addEventListener('keydown', e => {
     });
   }
 
+  function zoomToPlace(lng, lat) {
+    map.easeTo({
+      center: [lng, lat],
+      zoom: 10,
+      bearing: 20,   // optional: face direction of travel
+      duration: 1000,  // short ease to keep motion smooth
+      essential: true
+    });
+  }
+
   // Core animation loop
   function animateAlong(lineFeature, marker, { speedKts = 2000000, loop = true, centerCamera = true } = {}) {
     const line = turf.lineString(lineFeature.geometry.coordinates);
@@ -585,7 +608,6 @@ window.addEventListener('keydown', e => {
       duration: 1000,  // short ease to keep motion smooth
       essential: true
     });
-
 
     // prepare a marker instead of a GeoJSON source
     const startCoord = lineFeature.geometry.coordinates[0];
