@@ -139,6 +139,58 @@ HAVING (COUNT(DISTINCT ?po) >= 3)
 async function get_levensloop(persoonscluster_uri) {
 	// returns array of voyages of person: naam, functie, vertrek_datum, vertrek_plaats, aankomst_datum, aankomst_plaats, redenEindecontract
 	const sparql = `
+		# http://yasgui.org/short/JbsbUsQQHE
+		
+		PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		PREFIX prov: <http://www.w3.org/ns/prov#>
+		PREFIX schema: <https://schema.org/>
+		PREFIX hzs: <http://data.hetzinkendeschip.nl#>
+		PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+		# get_levensloop
+		# returns array of voyages of person: naam, functie, vertrek_datum, vertrek_plaats, aankomst_datum, aankomst_plaats, redenEindecontract
+		SELECT 
+		?persoon 
+		?occupation
+		?name
+		?reasonEndContract
+		?contract
+		?dateBeginContract 
+		?dateEndContract 
+		?row
+		?voyageID 
+		?departurePlace
+		?arrivalPlace
+		?voyageDirection
+
+		WHERE {
+		VALUES ?persoon { <https://vocdata.nl/personcluster#37666> }
+		
+		# als je ergens in de loopbaan een bepaalde status wil zien:
+		#  FILTER EXISTS {
+		#    ?persoon prov:wasDerivedFrom ?c2 .
+		#    ?c2 hzs:reasonEndContract "Deceased" .
+		#  }
+
+
+		?persoon prov:wasDerivedFrom ?contract .
+
+		OPTIONAL { ?contract schema:hasOccupation ?occupation . }
+		OPTIONAL { ?contract schema:name ?name . }
+		OPTIONAL { ?contract hzs:dateBeginContract ?dateBeginContract . }
+		OPTIONAL { ?contract hzs:dateEndContract ?dateEndContract . }
+		OPTIONAL { ?contract hzs:reasonEndContract ?reasonEndContract . }
+		OPTIONAL { ?contract hzs:personClusterRow ?row . }
+		
+		?contract hzs:outwardVoyage|hzs:returnVoyage ?voyageID .
+		OPTIONAL { ?contract hzs:outwardVoyage ?voyageID . BIND("outward" AS ?voyageDirection) }
+		OPTIONAL { ?contract hzs:returnVoyage ?voyageID . BIND("return" AS ?voyageDirection) }
+		
+		OPTIONAL { ?voyageID hzs:departurePlace ?departurePlace . }
+		OPTIONAL { ?voyageID hzs:arrivalPlace ?arrivalPlace . }
+		
+		}
+		ORDER BY ?dateBeginContract ?row
 	`;
 
 	const resultaten = await do_sparql(sparql,sparqlEndpointVOC);
