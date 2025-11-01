@@ -158,21 +158,66 @@ function game_play(dialog_uri) {
 
 function toon_keuze_dialoog_vertrekhaven(havens) {
 	// open dialoog, resultaat is place_uri
+	activateModal(
+		title = "Kies je vertrekhaven",
+		text = "Vanuit welke haven wil je vertrekken?",
+		choicesObject = havens.map(haven => ({ 'html': haven.naam, 'value': haven.uri })),
+		mp3 = null,
+		userChoice = true,
+		canClose = false,
+		callback = game_play()
+	)
 }
 
 function toon_startscherm() {
 	// open dialog met intro tekst + plaatje + button "start de reis", opening tune?
+	activateModal(
+		title = "Welkom bij het Zinkende Schip!",
+		text = "intro....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = true,
+		callback = null
+	)
 }
 
 function toon_kaars() {
 	// open dialog met disclaimer, schaduwkant belichting
+	activateModal(
+		title = "De schaduwkant van het Zinkende Schip!",
+		text = "intro....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = true,
+		callback = null
+	)
 }
 
 function toon_puntpasser() {
 	// open dialog met uitleg cartografie
+	activateModal(
+		title = "Over cartografie",
+		text = "intro....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = true,
+		callback = null
+	)	
 }
 
 function toon_dialoog_minigame_plaats_goed() {
+	activateModal(
+		title = "Goede plaats gekozen!",
+		text = "intro....",
+		choicesObject = null,
+		mp3 = null,
+		userChoice = false,
+		canClose = false,
+		callback = gameplay();
+	)	
 }
 
 function toon_dialoog_minigame_plaats_fout() {
