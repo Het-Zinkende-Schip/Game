@@ -135,6 +135,7 @@ async function get_random_object() {
 // Algemene functie om een SPARQL-query uit te voeren en resultaten als JavaScript-objecten terug te geven
 async function do_sparql(sparql, endpoint) {
   const url = endpoint + "?query=" + encodeURIComponent(sparql);
+  console.info(sparql)
   const headers = { 
     "Accept": "application/sparql-results+json",
     "User-Agent": "Het Zinkende Schip/0.1 (https://github.com/Het-Zinkende-Schip/)"
@@ -157,6 +158,6 @@ async function do_sparql(sparql, endpoint) {
     }
     return row;
   });
-
+  console.table(results);
   return results;
 }
