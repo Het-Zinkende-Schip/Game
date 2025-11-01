@@ -79,3 +79,5 @@ showInstrument(4)
   hideAllInstruments()
   showInstrument(4)
   activatePlaceChoiceMarkers(examplePlaceOptions)
+
+  let kaars_id="candle-wrapper";
