@@ -63,7 +63,7 @@ async function game_play(dialog_uri) {
 		console.log("Stage 4: Minigame resultaat");
 		guessedPlaceUri=dialog_uri;
 		stage++;
-		if (guessedPlaceUri==departurePlaceUri) {
+		if (guessedPlaceUri==haven_uri) {
 			toon_dialoog_minigame_plaats_goed();
 		} else {
 			toon_dialoog_minigame_plaats_fout();			
@@ -71,17 +71,21 @@ async function game_play(dialog_uri) {
 		break;
 
 	case 5:
-		console.log("Stage 5: Vertrekhaven gekozen, zoom naar plaats");
-		departurePlaceUri=dialog_uri;
-		const { lon, lat } = get_lon_lat(havens,departurePlaceUri);
+		console.log("Stage 5: Vertrekhaven gekozen, zoom naar plaats"+dialog_uri);
+		//departurePlaceUri=dialog_uri;
+		const { lon, lat } = get_lon_lat(havens,haven_uri);
+		console.log(lon, lat);
 		stage++;
-		gui_zoom_to_plaats(lon, lat);
-		break;
+		//gui_zoom_to_plaats(lon, lat);
+		//break;
+		stage++;
 
 	case 6:
 		console.log("Stage 6: Kies scheepstype (eigenlijk voyage)");
-		voyages=get_lijst_reizen(departurePlaceUri);
+		voyages=await get_lijst_reizen(haven_uri);
+		console.log(voyages);
 		scheeptypen=get_unieke_scheepstypen(voyages);
+		console.log(scheeptypen);
 		stage++;
 		toon_keuze_dialoog_scheepstype(voyages, scheeptypen);
 		break;
@@ -227,22 +231,33 @@ function toon_puntpasser() {
 }
 
 function toon_uitleg_markers(place_name) {
+	console.info("toon uitleg markers voor plaats: "+place_name);
+	console.info(activateModal);
 	activateModal(
 		title = "Weet je waar deze haven van "+place_name+" ligt?",
 		text = "klik zo op een marker op de kaart om de locatie van de haven aan te geven.",
-		choicesObject = [],
+		choicesObject = [{
+        'html': 'verder',
+        'value': ''
+      }],
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
 		callback = game_play
-	)	
+	);
+	console.info(document.getElementById("myModal").style.display);
+	setTimeout(() => {
+	console.info("Forcing modal display after timeout");
+	document.getElementById("myModal").style.display = "block";   
+  }, 500);
+//	modal.style.setProperty('display', 'block', 'important');
 }
 
 function toon_dialoog_minigame_plaats_goed() {
 	activateModal(
 		title = "Goede plaats gekozen!",
 		text = "Ja, dat klopt! ",
-		choicesObject = [],
+		choicesObject = [ {'html': 'verder', 'value': '' } ],
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
@@ -253,23 +268,24 @@ function toon_dialoog_minigame_plaats_goed() {
 function show_minigame_plaats(havens) {
 	//	haven_uri is gekozen haven, nog max 5 random havens erbij tonen
 	//  add markers, array van lat,lon 
-
+console.table(havens);	
 	const placeOptions = havens
-	.filter(haven => !haven.placeId) // keep only items without placeId
+//	.filter(haven => !haven.placeId) // keep only items without placeId
 	.map(haven => ({
 		value: haven.placeId,
-		longitude: haven.longitude,
-		latitude: haven.latitude
+		location: [haven.longitude, haven.latitude]
 	})).slice(0,5);
 
-	activatePlaceChoiceMarkers(placeOptions = [], game_play);
+	console.table(placeOptions);	
+
+	activatePlaceChoiceMarkers(placeOptions , game_play);
 };
 
 function toon_dialoog_minigame_plaats_fout() {
 	activateModal(
 		title = "Foute plaats gekozen!",
 		text = "Helaas, dat klopt niet. {Plaats} ligt hier # navigeer naar plaats",
-		choicesObject = [],
+		choicesObject = [ {'html': 'verder', 'value': '' } ],
 		mp3 = null,
 		userChoice = false,
 		canClose = false,
@@ -279,7 +295,7 @@ function toon_dialoog_minigame_plaats_fout() {
 
 function toon_keuze_dialoog_scheepstype(voyages, scheeptypen) {
 	//		show_minigame_scheepstype (3 afbeeldingen tonen, Laadvermogen, 	bemanning)
-
+console.log(scheeptypen);
 	activateModal(
 		title = "Kies je schip",
 		text = "Er zijn verschillende schepen vanuit deze haven vertrokken, bij welk schip monster jij aan?",
@@ -307,7 +323,7 @@ function toon_keuze_bemanningslid(bemanning) {
 function toon_levensloop_reizen(levensloop) {
 	activateModal(
 		title = "Levensloop van bemanningslid {naam}",
-		text = "Je treft {naam} op deze reis aan boord van {schip}, maar dankzij de beschikbaar gemaakte datasets weten we een aantal elementen van zijn verdere carrière:", # Check twee auto-fill {} items.
+		text = "Je treft {naam} op deze reis aan boord van {schip}, maar dankzij de beschikbaar gemaakte datasets weten we een aantal elementen van zijn verdere carrière:", 
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -331,7 +347,7 @@ function toon_dialoog_minigame_scheeptype_goed() {
 function toon_dialoog_minigame_scheeptype_fout() {
 	activateModal(
 		title = "Foute scheepstype gekozen!",
-		text = "Helaas, dat klopt niet. Jij koos een +type_fout+. De correcte afbeelding is {afbeelding}.", # Check {}.
+		text = "Helaas, dat klopt niet. Jij koos een +type_fout+. De correcte afbeelding is {afbeelding}.",
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -360,7 +376,7 @@ function toon_extra_cartografische_instrument(reis) {
 function toon_einde_reis() { // hoe lang erover gedaan, aanzetten tot nog een reis
 	activateModal(
 		title = "Einde van de reis!",
-		text = "Je bent na {x} dagen veilig aangekomen, gefeliciteerd. Met de ervaring die je deze reis opgedaan hebt, verdien je een volgende gereedschap voor je cartografische gereedschapskist. Wat wordt jouw volgende reis?", #Check {}
+		text = "Je bent na {x} dagen veilig aangekomen, gefeliciteerd. Met de ervaring die je deze reis opgedaan hebt, verdien je een volgende gereedschap voor je cartografische gereedschapskist. Wat wordt jouw volgende reis?", 
 		choicesObject = [],
 		mp3 = null,
 		userChoice = false,
@@ -384,13 +400,17 @@ function end_of_game() { // dialoog die spel stopt, enige optie is F5 om nieuwe 
 // helpers
 
 function get_lon_lat(havens,departurePlaceUri) {
+	console.table(havens);
+	console.log("get_lon_lat for URI: "+departurePlaceUri);	
   // Find the haven with the matching URI
-  const found = havens.find(haven => haven.uri === departurePlaceUri);
+  const found = havens.find(haven => haven.placeId === departurePlaceUri);
 
   // If found, return its lon and lat
   if (found) {
-    return { lon: found.lon, lat: found.lat };
+	console.log("Found haven:", found);
+    return ({ lon: found.lon, lat: found.lat });
   }
+	console.log("Found not haven:");
 
   // If not found, return null (or you could throw an error)
   return null;

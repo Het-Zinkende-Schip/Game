@@ -92,9 +92,7 @@ async function get_lijst_reizen(vertrekplaats_uri) {
 			BIND(
 				IF(
 				BOUND(?arrivalDate) && BOUND(?departureDate),
-				((?jaarA0 - ?jaarD0) * 365) +
-
-				""
+				((?jaarA0 - ?jaarD0) * 365) ,""
 				)
 				AS ?duur_in_dagen
 			)
