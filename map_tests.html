@@ -387,10 +387,19 @@
       content: "";
     }
 
-    #caliper-wrapper, #die-wrapper {
-      position: fixed;     /* relative to the viewport */
-      z-index: 20;         /* above map, modal, etc. */
-      pointer-events: auto;
+    #caliper-wrapper {
+      position: fixed;
+      z-index: 20;
+      pointer-events: none;
+      transform: rotate(-30deg); /* shift 10% of viewport width */
+      transform-origin: center;
+    }
+
+    #die-wrapper {
+      position: fixed;
+      z-index: 20;
+      pointer-events: none;
+      transform-origin: center;
     }
 
     #caliper-wrapper {
@@ -438,10 +447,10 @@
 </div>
 
 <div id="caliper-wrapper">
-  <img id="caliper" src="icons/ship.png" width="100" />
+  <img id="caliper" src="images/instrumenten/Rijksmuseum_puntpasser_transparant.png" width="300" />
 </div>
 <div id="die-wrapper">
-  <img id="die" src="icons/ship.png" width="100" />
+  <img id="die" src="images/instrumenten/Rijksmuseum_kompas_transparant.png" width="100" />
 </div>
 
 <script>
@@ -544,16 +553,43 @@ window.addEventListener('keydown', e => {
   if (e.key === 'd') openModal()
   if (e.key === 'c') setModalCanClose(!modalCanClose)
   if (e.key === 'p') activateModal(
-    title = "Kies je scheep",
-    text = "Welke is de juiste soort?",
+    title = "Schaduwzijde",
+    text = `
+In de periode dat de Verenigde Oostindische Compagnie (VOC) van 1602 t/m 1795 actief was, had het bedrijf een handelsmonopolie voor het gebied ten oosten van Kaap de Goede Hoop tot de Straat Magalhaen. Dit betekende dat de organisatie een leger mocht hebben, en diplomatieke contacten met lokale en regionale bestuurders onderhield. 
+
+In het streven naar het maken van zoveel mogelijk winst, zette de VOC deze middelen veelvuldig in, met alle gevolgen van dien. Er waren dwangconstructies waarbij lokale bevolking bijv. een bepaald quota koffie per periode moest leveren, die met (extreem) geweld gehandhaafd werden. Ook werd er, indien deze praktijk al in de regio aanwezig was, gebruik gemaakt van tot slaaf gemaakten ('lijfeigenen' genoemd). Graag verwijzen we naar een aantal bronnen waar u meer kunt lezen over deze verschillende facetten van deze historische organisatie. 
+
+<a href>https://www.vocsite.nl/geschiedenis/slavernij/</href>
+<a href>https://www.zeeuwsarchief.nl/zoekgids/onderzoek-naar-de-voc/</href>
+    `,
     choicesObject = [
       {
-        'html': 'Een grote:<br/> <img src="icons/ship.png" width="300">',
-        'value': 'DaShit1'
-      },
+        'html': 'Verder',
+        'value': ''
+      }
+    ],
+    mp3 = null,
+    userChoice = true,
+    canClose = false,
+    callback = function(value) {
+      console.log('User chose:', value);
+    }
+  )
+  if (e.key === 'i') activateModal(
+    title = "Cartografie",
+    text = `
+<p>De wetenschap en techniek om geografische informatie te visualiseren met behulp van kaarten wordt cartografie genoemd. De maker van zo'n kaart heet een cartograaf. Er is niet één 'perfecte' of 'juiste' kaart van een gebied; kaarten worden altijd gemaakt met een bepaalde doelgroep in gedachten, en de interpretatie van de data die ze overbrengen is dus altijd in een mate gekleurd. Dit zien we bijvoorbeeld terugkomen in elementen als de keuze wat centraal afgebeeld is op de kaart, welke projectie gebruikt is, wat wel en niet geduid is, etc. Wil je meer te weten komen over dit vakgebied? </p>
+
+<ul>
+  <li> Bekijk dan <a href="https://uu.academia.edu/MarcovanEgmond">het werk van dr. Marco van Egmond</a> </li>
+  <li> Of lees dit <a href>artikel</href></li>
+</ul>
+
+    `,
+    choicesObject = [
       {
-        'html': 'Een kleine:<br/> <img src="icons/ship.png" width="200">',
-        'value': 'DaShit2'
+        'html': 'Verder',
+        'value': ''
       }
     ],
     mp3 = null,
@@ -564,12 +600,37 @@ window.addEventListener('keydown', e => {
     }
   )
   if (e.key === 'o') activateModal(
-    title = "Kies je scheep",
-    text = "Welke is de juiste soort?",
+    title = "Levensloop",
+    text = `
+<b>Ship's boy (1758-12-01 – 1761-06-09)</b>
+<ul>
+  <li>Contract: <a href="https://vocdata.nl/opvarenden#1304336">https://vocdata.nl/opvarenden#1304336</a></li>
+  <li>Beëindiging: Repatriated</li>
+  <li>Reizen:
+    <ul>
+      <li><a href="https://vocdata.nl/voyage#94800">https://vocdata.nl/voyage#94800</a> — Texel - Batavia (outward)</li>
+      <li><a href="https://vocdata.nl/voyage#98423">https://vocdata.nl/voyage#98423</a> — China - Texel (return)</li>
+    </ul>
+  </li>
+</ul>
+
+<b>Bookkeeper (1761-12-12 – 1766-07-15)</b>
+<ul>
+  <li>Contract: <a href="https://vocdata.nl/opvarenden#1286019">https://vocdata.nl/opvarenden#1286019</a></li>
+  <li>Beëindiging: Repatriated</li>
+  <li>Reizen:
+    <ul>
+      <li><a href="https://vocdata.nl/voyage#94883">https://vocdata.nl/voyage#94883</a> — Texel - Batavia (outward)</li>
+      <li><a href="https://vocdata.nl/voyage#98553">https://vocdata.nl/voyage#98553</a> — China - Texel (return)</li>
+    </ul>
+  </li>
+</ul>
+
+    `,
     choicesObject = [
       {
-        'html': 'OK - lets go!',
-        'value': 'DaShit1'
+        'html': 'Verder',
+        'value': ''
       }
     ],
     mp3 = null,
@@ -601,7 +662,7 @@ window.onclick = function(event) {
 
 <div class="map-border-instrument-container">
   <img class="instrument" id="instrument1" src="images/instrumenten/Rijksmuseum_kompas_transparant.png" width="90"></img>
-  <img class="instrument" id="instrument2" src="images/instrumenten/Rijksmuseum_puntpasser_transparant.png" width="90"></img>
+  <img class="instrument" id="instrument2" src="images/instrumenten/Rijksmuseum_puntpasser_2_transparant.png" width="90"></img>
   <img class="instrument" id="instrument3" src="images/instrumenten/Rijksmuseum_sextant_transparant.png" width="90"></img>
   <img class="instrument" id="instrument4" src="images/instrumenten/Rijksmuseum_inktpot_transparent_800.png" width="90"></img>
 </div>
@@ -939,7 +1000,7 @@ window.onclick = function(event) {
   function zoomToPlace(lng, lat) {
     map.easeTo({
       center: [lng, lat],
-      zoom: 10,
+      zoom: 7,
       bearing: 20,   // optional: face direction of travel
       duration: 1000,  // short ease to keep motion smooth
       essential: true
@@ -983,7 +1044,7 @@ window.onclick = function(event) {
     if (e.key.toLowerCase() === '4') playMP3(strudel2);
     if (e.key.toLowerCase() === '5') playMP3(schwindl);
     if (e.key.toLowerCase() === '0') hushMP3();
-    if (e.key.toLowerCase() === '-') zoomToPlace(10,10);
+    if (e.key.toLowerCase() === '-') zoomToPlace(4.5,52);
   });
 
   // Core animation loop
