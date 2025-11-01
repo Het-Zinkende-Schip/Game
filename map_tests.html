@@ -72,7 +72,6 @@
 
     /* The Modal (background) */
     .modal {
-      display: none; /* Hidden by default */
       position: fixed; /* Stay in place */
       z-index: 100; /* Sit on top */
       padding-top: 100px; /* Location of the box */
@@ -388,24 +387,14 @@
       content: "";
     }
 
-    #caliper-wrapper {
-      position: fixed;
-      z-index: 20;
-      pointer-events: none;
-      transform: rotate(-30deg);
-      transform-origin: center;
-    }
-    
-    #die-wrapper {
-      position: fixed;
-      z-index: 20;
-      pointer-events: none;
-      /* transform: rotate(-30deg); 
-      transform-origin: center; */
+    #caliper-wrapper, #die-wrapper {
+      position: fixed;     /* relative to the viewport */
+      z-index: 20;         /* above map, modal, etc. */
+      pointer-events: auto;
     }
 
     #caliper-wrapper {
-      left: -5%;
+      left: 0%;
       bottom: 10%;            /* upper-left corner */
     }
 
@@ -449,7 +438,7 @@
 </div>
 
 <div id="caliper-wrapper">
-  <img id="caliper" src="images/instrumenten/Rijksmuseum_puntpasser_transparant.png" width="400" />
+  <img id="caliper" src="icons/ship.png" width="100" />
 </div>
 <div id="die-wrapper">
   <img id="die" src="icons/ship.png" width="100" />
@@ -473,12 +462,14 @@ var modalCanClose = true;
 var modalCallback = function() {}
 
 setModalCanClose = function(canClose) {
+  console.log(" setting canClose: " + canClose)
   modalCanClose = canClose?true:false;
   if (modalCanClose) {
     closeModalX.style.visibility = "visible";
   } else {
     closeModalX.style.visibility = "hidden";
   }
+  console.log("Done setting canClose: " + closeModalX.style.visibility)
 }
 
 setModalContent = function(header, body, footer) {
@@ -494,19 +485,26 @@ setModalContent(
 )
 
 openModal = function() {
+  console.log("Opening modal");
+  console.info(document.getElementById("myModal").style.display)
   modal.style.display = "block";
+  document.getElementById("myModal").style.display = "block";   
+  modal.style.setProperty('display', 'block', 'important');
+  console.info(document.getElementById("myModal").style.display);
 }
 
 closeModal = function() {
-  if (modalCanClose) modal.style.display = "none";
+  console.log("Closing modal");
+  if (modalCanClose) modal.style.display = "none"; 
 }
 
 
 activateModal = function(title, text, choicesObject, mp3, userChoice = true, canClose = true, callback = function(value) {
   console.log('User chose:', value);
 }) {
-  modal.style.display = "none";
-
+  // modal.style.display = "none";
+  console.log("Console log:" + choicesObject);
+  
   const choicesHTML = choicesObject.map(choice => `
     <div class="choice" data-value="${choice.value}">
       ${choice.html}
@@ -518,11 +516,16 @@ activateModal = function(title, text, choicesObject, mp3, userChoice = true, can
     <div class="choicesContainer">${choicesHTML}</div>
   `;
 
+
+  console.log("Console log:");
+
   setModalContent(
     title,
     bodyHTML,
     ""
-  )
+  );
+  console.log("After setModalContent log:");
+
 
   modal.querySelectorAll('.choice').forEach(div => {
     div.addEventListener('click', () => {
@@ -598,7 +601,7 @@ window.onclick = function(event) {
 
 <div class="map-border-instrument-container">
   <img class="instrument" id="instrument1" src="images/instrumenten/Rijksmuseum_kompas_transparant.png" width="90"></img>
-  <img class="instrument" id="instrument2" src="images/instrumenten/Rijksmuseum_puntpasser_2_transparant.png" width="90"></img>
+  <img class="instrument" id="instrument2" src="images/instrumenten/Rijksmuseum_puntpasser_transparant.png" width="90"></img>
   <img class="instrument" id="instrument3" src="images/instrumenten/Rijksmuseum_sextant_transparant.png" width="90"></img>
   <img class="instrument" id="instrument4" src="images/instrumenten/Rijksmuseum_inktpot_transparent_800.png" width="90"></img>
 </div>
@@ -892,11 +895,14 @@ window.onclick = function(event) {
 
 
   let activeMarkers = [];
-
+  window.activeMarkers=activeMarkers;
   function activatePlaceChoiceMarkers(placeOptions = [], callbackFn = v => console.log('User chose:', v)) {
+
     // remove any existing markers first
     activeMarkers.forEach(m => m.remove());
     activeMarkers = [];
+    
+    console.table(placeOptions);
 
     placeOptions.forEach(opt => {
       const el = document.createElement('img');
@@ -905,6 +911,7 @@ window.onclick = function(event) {
       el.className = 'place-marker';
  
       el.addEventListener('click', () => {
+        console.log('Marker clicked:', opt.value);
         callbackFn(opt.value);
         // remove all markers after a selection
         activeMarkers.forEach(m => m.remove());
@@ -921,7 +928,7 @@ window.onclick = function(event) {
 
 
   }
-
+  window.activatePlaceChoiceMarkers = activatePlaceChoiceMarkers;
   hideAllInstruments()
   showInstrument(1)
   showInstrument(2)
