@@ -45,8 +45,14 @@
       transform-origin:center center;
     }
 
-    .dialog-area {
+    .map-border-image {
+      width:100%;
+      height:100%;
+      pointer-events:none;
+    }
 
+    .map-border-instrument-container {
+      position:absolute;
     }
 
     /* Keep pixel-art crisp when scaled */
@@ -132,6 +138,9 @@
       margin: 10px;
       background-color: #ffffffb1;
       display: flex;
+      justify-content: center;  /* centers horizontally */
+      align-items: center;      /* centers vertically if taller */
+      text-align: center;
       gap: 1em;
       flex-wrap: wrap;
     }
@@ -148,6 +157,14 @@
       border: #eb5555 7px solid;
       padding: 1em;
       margin: 0;
+    }
+
+    .place-marker {
+      transition: filter 0.2s ease;
+    }
+
+    .place-marker:hover {
+      filter: drop-shadow(0 0 8px #00ffff);
     }
   </style>
 </head>
@@ -272,6 +289,22 @@ window.addEventListener('keydown', e => {
       console.log('User chose:', value);
     }
   )
+  if (e.key === 'o') activateModal(
+    title = "Kies je scheep",
+    text = "Welke is de juiste soort?",
+    choicesObject = [
+      {
+        'html': 'OK - lets go!',
+        'value': 'DaShit1'
+      }
+    ],
+    mp3 = null,
+    userChoice = true,
+    canClose = false,
+    callback = function(value) {
+      console.log('User chose:', value);
+    }
+  )
 });
 
 closeModalX.onclick = function() {
@@ -292,7 +325,16 @@ window.onclick = function(event) {
     <div id="map"></div>
   </div>
 </div>
-<img src="images/vintage-paper-texture-1504806601t0F-background.png" class="map-border" alt="">
+
+<div class="map-border">
+  <div class="map-border-instrument-container">
+    <img class="instrument" id="instrument1" src="icons/ship-icon.png" width="90"></img>
+    <img class="instrument" id="instrument2" src="icons/ship-icon.png" width="90"></img>
+    <img class="instrument" id="instrument3" src="icons/ship-icon.png" width="90"></img>
+    <img class="instrument" id="instrument4" src="icons/ship-icon.png" width="90"></img>
+  </div>
+  <img src="images/vintage-paper-texture-1504806601t0F-background.png" class="map-border-image" alt="Scheep">
+</div>
 
 <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
@@ -503,7 +545,7 @@ window.addEventListener('keydown', e => {
 
     const el = document.createElement('img');
     el.src = 'icons/ship.png';
-    el.style.width = '3em';
+    el.style.width = '4em';
 
 
     const boatMarker = new maplibregl.Marker({element: el})
@@ -575,6 +617,72 @@ window.addEventListener('keydown', e => {
       img.src = src;
     });
   }
+
+  function hideAllInstruments() {
+    for(n=1;n<5;n++) {
+      document.getElementById(`instrument${n}`).style.visibility = "hidden"
+    }
+  }
+
+  function showInstrument(n) {
+    document.getElementById(`instrument${n}`).style.visibility = "visible"
+  }
+
+  const examplePlaceOptions = [
+    {
+      location: [0,0],
+      value: "place1"
+    },
+        {
+      location: [10,10],
+      value: "place2"
+    },
+    {
+      location: [20,20],
+      value: "place3"
+    }
+  ]
+
+
+  let activeMarkers = [];
+
+  function activatePlaceChoiceMarkers(placeOptions = [], callback = v => console.log('User chose:', v)) {
+    // remove any existing markers first
+    activeMarkers.forEach(m => m.remove());
+    activeMarkers = [];
+
+    placeOptions.forEach(opt => {
+      const el = document.createElement('img');
+      el.src = 'icons/anker-icon.png';
+      el.style.width = '4em';
+      el.className = 'place-marker';
+ 
+      el.addEventListener('click', () => {
+        callback(opt.value);
+        // remove all markers after a selection
+        activeMarkers.forEach(m => m.remove());
+        activeMarkers = [];
+      });
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat(opt.location)
+        .addTo(map);      
+      activeMarkers.push(marker);
+    }
+    
+    );
+
+
+    for(i=0;i<placeOptions.length;i++) {
+      new maplibregl.Marker({element: el})
+      .setLngLat([4.9, 52.37])
+      .addTo(map);
+    }
+  }
+
+  hideAllInstruments()
+  showInstrument(4)
+  activatePlaceChoiceMarkers(examplePlaceOptions)
 
   function zoomToPlace(lng, lat) {
     map.easeTo({
