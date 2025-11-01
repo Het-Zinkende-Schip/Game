@@ -112,6 +112,7 @@ function get_lijst_bemanning(voyage_id) {
 	// returns array of max (25) personsclusters (where #personobservations > 3) on voyage_id: persoonscluster_uri, naam
 
 	const sparql = `
+	http://yasgui.org/short/vMyf7JM0XR
 	`;
 
 	const resultaten = await do_sparql(sparql,sparqlEndpointVOC);
