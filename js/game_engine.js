@@ -300,7 +300,7 @@ console.log(scheeptypen);
 		title = "Kies je schip",
 		text = "Er zijn verschillende schepen vanuit deze haven vertrokken, bij welk schip monster jij aan?",
 		choicesObject = scheeptypen.map(scheeptype => (
-			{ 'html': scheeptype.naam+'<br><img src="'+scheeptype.iiif_image_uri+'" alt="'+scheeptype.naam+'"/>', 'value': scheeptype.uri })),
+			{ 'html': scheeptype.scheeptype+'<br><img src="/img/scheeptypen/'+scheeptype.scheepstype+'.jpg"/>', 'value': scheeptype.uri })),
 		mp3 = null,
 		userChoice = true,
 		canClose = false,
