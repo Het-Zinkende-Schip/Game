@@ -300,7 +300,7 @@ console.log(scheeptypen);
 		title = "Kies je schip",
 		text = "Er zijn verschillende schepen vanuit deze haven vertrokken, bij welk schip monster jij aan?",
 		choicesObject = scheeptypen.map(scheeptype => (
-			{ 'html': scheeptype.scheeptype+'<br><img src="/img/scheeptypen/'+scheeptype.scheepstype+'.jpg"/>', 'value': scheeptype.uri })),
+			{ 'html': scheeptype.scheeptype+'<br><img src="/images/scheepstypen/'+scheeptype.scheepstype+'.jpg"/>', 'value': scheeptype.uri })),
 		mp3 = null,
 		userChoice = true,
 		canClose = false,
@@ -418,11 +418,11 @@ function get_lon_lat(havens,departurePlaceUri) {
 
 function get_unieke_scheepstypen(voyages) {
   const uniqueMap = new Map();
-
+console.log(voyages);
   for (const v of voyages) {
     // Only add if we haven’t seen this scheepstype before
     if (!uniqueMap.has(v.scheepstype)) {
-      uniqueMap.set(v.scheepstype, { scheepstype: v.scheepstype, image_url: v.image_url });
+      uniqueMap.set(v.scheepstype, { uri: v.voyageId,  scheepstype: v.scheepstype, image_url: v.image_url });
     }
   }
 
