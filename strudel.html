@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Strudel background music</title>
+    <!-- Strudel web bundle, as in the README -->
+    <script src="muziek/strudel-web/index.js"></script>
+    <!--
+    <script src="https://unpkg.com/@strudel/web@1.2.3"></script>
+    -->
+  </head>
+  <body>
+    <button id="play1">Play1</button>
+    <button id="play2">Play2</button>
+    <button id="stop">Stop</button>
+    <script>
+      // PREBAKE: runs once when initStrudel() is called.
+      // initStrudel waits for the Promise it returns before evaluating patterns.
+      initStrudel({
+        prebake: async () => {
+          const ds = 'https://raw.githubusercontent.com/felixroos/dough-samples/main';
+          const ts = 'https://raw.githubusercontent.com/todepond/samples/main';
+          const tc = 'https://raw.githubusercontent.com/tidalcycles/uzu-drumkit/main';
+
+          // Now load soundfonts module
+          // const module = await import('https://unpkg.com/@strudel/soundfonts@1.0.0/dist/soundfonts.mjs');
+          // module.registerSoundfonts();
+
+          return Promise.all([
+            // dough-samples packs
+            samples(ds + '/tidal-drum-machines.json'),
+            samples(ds + '/piano.json'),
+            samples(ds + '/Dirt-Samples.json'),
+            samples(ds + '/vcsl.json'),
+            samples(ds + '/mridangam.json'),
+
+            // Tidal/Dirt-samples
+            // samples("https://raw.githubusercontent.com/tidalcycles/dirt-samples/master/dirt-samples.json"),
+
+            // Het Zinkende Schip tidal samples
+            samples('/hzs-tidal-samples.json'),
+
+
+            // uzu drumkit
+            samples(tc + '/strudel.json'),
+
+            // bd, sd, hh, etc aliases for tidal drum machines
+            aliasBank(ts + '/tidal-drum-machines-alias.json'),
+          ]);
+        },
+      });
+
+      // Simple helper to wire buttons
+      const on = (id, fn) =>
+        document.getElementById(id).addEventListener('click', fn);
+
+      // Start background music on click (required by browser autoplay policy)
+      on('play1', () => {
+        // Track 1 – kick
+        const kick = s("bd(3,8)").gain(0.1);
+
+        // Track 2 – hats
+        const hats = s("hh*16").gain(0.1);
+
+        // Track 3 – bass (using some other sample/bank)
+        const bass = s("jvbass(5,8)").gain(0.1);
+
+        const gm_line = note("c3 e3 g3").s("gm_piano").room(1.2).gain(0.7)
+
+        // Play all three in parallel:
+        stack(kick, hats, bass, gm_line).play();
+      });
+
+
+      on('play2', () => {
+        // Track 1 – kick
+        // loadPatternFile("/muziek/route1.strudel")
+        const kick = s("bd(3,8)").gain(0.1);
+
+        // Track 2 – hats
+        const hats = s("hh*16").gain(0.1);
+
+        // Track 3 – bass (using some other sample/bank)
+        const bass = s("jvbass(5,8)").gain(0.1);
+
+        const gm_line = note("c3 e3 g3").s("gm_piano").room(1.2).gain(0.7)
+
+        // Play all three in parallel:
+        stack(kick).play();
+      });
+
+
+      // Stop everything
+      on('stop', () => hush());
+    </script>
+  </body>
+</html>

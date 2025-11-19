@@ -18,6 +18,7 @@
       font-family: "IM Fell English", serif;
       font-weight: 400;
       font-style: normal;
+      font-size: calc(1rem + 0.5vw);
     }
 
     .map-area {
@@ -170,6 +171,7 @@
 
     .place-marker {
       transition: filter 0.2s ease;
+      font-size: calc(.25rem + 0.125vw);
     }
 
     .place-marker:hover {
@@ -858,7 +860,7 @@ window.onclick = function(event) {
 
     const el = document.createElement('img');
     el.src = 'icons/ship.png';
-    el.style.width = '4em';
+    el.style.width = 'calc(2rem + 0.5vw)';
 
 
     const boatMarker = new maplibregl.Marker({element: el})
